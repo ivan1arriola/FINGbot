@@ -3,6 +3,9 @@ const fuzzysort = require('fuzzysort')
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { MessageMedia } = require('whatsapp-web.js');
+const execSync = require('child_process').execSync;
+
+execSync("./generarFechasParciales https://www.fing.edu.uy/sites/default/files/2024-10/Calendario%202dos.%20Parciales%202do.%20Semestre%202024.pdf");
 const fechas = JSON.parse(fs.readFileSync('fechasParciales.json'));
 
 const meses = [
@@ -34,7 +37,7 @@ function fechaLegible(dateTime) {
 }
 
 async function cuandoParcial(client, message) {
-    if (message.body.includes("cdiv")) {
+    if (message.body == "!cuando cdiv") {
         message.body = "!cuando calculo una variable";
     }
     let curso = /!cuando ([a-zA-Z0-9 ]+)/.exec(message.body)[1];
@@ -46,6 +49,11 @@ async function cuandoParcial(client, message) {
         keys: null,      // For when targets are objects (see its example usage)
         scoreFn: null,   // For use with `keys` (see its example usage)
         })
+
+    if (res.length === 0) {
+        await message.reply(`No se encontró el curso ${curso}`);
+        return;
+    }
     await message.reply(`El parcial de ${res[0].target} es el ${fechaLegible(fechas[res[0].target])}`)
 }
 module.exports = cuandoParcial;
