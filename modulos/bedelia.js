@@ -23,11 +23,13 @@ module.exports = [
 ]
 /*
 Exportacion de ejemplo 
-[{name:'NombreComando',func:mifuncion,info:'Descripcion del comando',args:[{name:'arg1','info':'Descripcion del argumento'}],min_args:n}]
+[{name:'NombreComando',func:mifuncion,info:'Descripcion del comando',args:[{name:'arg1','info':'Descripcion del argumento'}],min_args:n,alias:['mialias']}]
 El parámetro func y name son obligatorios
 El comando info es opcional pero es recomendable ponerlo(se muestra en !help <comando>) o al usar mal el comando
+
 Si se omite el parametro args o es vacio, el comando no toma parametros(El orden de los parametros es primero los requeridos y luego los opcionales)
 Si se omite el parametro min_args o es vacio, se toma como que todos los parametros son opcionales(o 0 en el caso de de que no haya parametros)
+Si se omite el parámetro alias o es vacio, el comando no tiene alias
 La función recibe el cliente, el objeto message y los argumentos
 Los argumentos están separados por espacio, ejemplo: !micomando arg1 arg2 argn los argumentos son arg1,arg2 y arg3
 Si hay n argumentos especificados en el comando , pero hay mas de n argumentos,
