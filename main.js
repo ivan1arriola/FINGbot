@@ -4,6 +4,26 @@ const checkExamInfo = require('./funciones/examen'); // Asegúrate de que este m
 const checkNewsInfo = require('./funciones/noticias'); // Asegúrate de que este módulo exista
 const devolverCalendarioParciales = require('./funciones/calendarioParciales'); // Asegúrate de que este módulo exista
 const getBedeliaInfo = require('./funciones/bedelia'); // Asegúrate de que este módulo exista
+const tomaso = require('./funciones/tomaso'); // Asegúrate de que este módulo exista
+const ping = require('./funciones/ping'); // Asegúrate de que este módulo exista
+const fechas = require('./funciones/fechas'); // Asegúrate de que este módulo exista
+
+const sendHelp = async (client, message) => {
+    const helpMessage = `*Lista de comandos disponibles:*\n
+    1. !examenes\n
+    2. !noticias\n
+    3. !ping\n
+    4. !parciales\n
+    5. !Tomaso\n
+    6. !tomaso\n
+    7. !bedelia\n
+    8. !bedelias\n
+    9. !fechas\n
+    10. !help`;
+
+    // Enviar el mensaje de ayuda
+    await client.sendMessage(message.from, helpMessage);
+};
 
 const client = new Client({
     authStrategy: new LocalAuth(),
@@ -12,46 +32,54 @@ const client = new Client({
     }
 });
 
+// Genera y muestra el código QR en la terminal
 client.on('qr', (qr) => {
     console.log('QR recibido: ', qr);
-    qrcode.generate(qr, { small: true }); // Muestra el QR en la terminal
+    qrcode.generate(qr, { small: true });
 });
 
+// Indica que el cliente está listo
 client.on('ready', () => {
     console.log('¡Cliente está listo!');
 });
 
+// Mapeo de comandos a funciones
+const commandMap = {
+    '!examenes': checkExamInfo,
+    '!noticias': checkNewsInfo,
+    '!ping': ping,
+    '!parciales': devolverCalendarioParciales,
+    '!Tomaso': tomaso,
+    '!tomaso': tomaso,
+    '!bedelia': getBedeliaInfo,
+    '!bedelias': getBedeliaInfo,
+    '!fechas': fechas,
+    '!help': sendHelp
+
+    
+};
+
+// Manejo de mensajes entrantes
 client.on('message_create', async (message) => {
     // Ignorar mensajes enviados por el bot
     if (message.from === client.info.wid.user) {
         return;
     }
 
-    // Verifica si el mensaje contiene la etiqueta !examenes
-    if (message.body.includes('!examenes')) {
-        await checkExamInfo(client, message);
-    }
+    // Verifica comandos
+    const command = message.body.trim(); // Elimina espacios innecesarios
 
-    // Verifica si el mensaje contiene la etiqueta !noticias
-    if (message.body.includes('!noticias')) {
-        await checkNewsInfo(client, message);
-    }
+    if (command in commandMap) {
+        const userId = message.from;
+        const currentTime = new Date();
+        const formattedTime = `${String(currentTime.getHours()).padStart(2, '0')}:${String(currentTime.getMinutes()).padStart(2, '0')}`;
+        console.log(`${userId} - ${formattedTime} - Llamando a ${commandMap[command].name || command}...`);
 
-    // Responder a mensajes de ping
-    if (message.body === '!ping') {
-        message.reply('pong 🏓');
-    }
-
-    // Calendario de parciales 📅
-    if (message.body === '!parciales') {
-        await devolverCalendarioParciales(client, message);
-    }
-
-    // Verifica si el mensaje contiene la etiqueta !bedelia
-    if (message.body === '!bedelia') {
-        await getBedeliaInfo(client, message); // Llama a la función para obtener información de Bedelía
+        // Llama a la función correspondiente
+        await commandMap[command](client, message);
     }
 });
 
 // Inicializa el cliente
 client.initialize();
+

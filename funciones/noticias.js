@@ -49,7 +49,6 @@ async function checkNewsInfo(client, msg) {
             await client.sendMessage(msg.from, "No hay noticias disponibles en este momento.");
         }
     } catch (error) {
-        console.error("Error al obtener noticias:", error);
         await client.sendMessage(msg.from, "No pudimos obtener la información de las noticias en este momento.");
     }
 }

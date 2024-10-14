@@ -5,11 +5,9 @@ const cheerio = require('cheerio');
 async function checkExamInfo(client, message) {
     try {
         await message.reply('Estoy buscando información sobre los exámenes...'); // Responde al usuario
-        console.log('Mensaje de respuesta enviado al usuario.'); // Mensaje en consola
 
         // Realiza la solicitud GET
         const response = await axios.get("https://www.fing.edu.uy/es/bedelia/ex%C3%A1menes");
-        console.log("Solicitud GET realizada con éxito."); // Mensaje en consola
 
         // Cargar el contenido HTML en Cheerio
         const $ = cheerio.load(response.data);
@@ -40,10 +38,8 @@ async function checkExamInfo(client, message) {
             }
         } else {
             await client.sendMessage(message.from, "No se encontró información sobre el calendario de exámenes de Diciembre 2024.");
-            console.log("No se encontró información sobre el calendario de exámenes."); // Mensaje en consola
         }
     } catch (error) {
-        console.error("Error al obtener la información de los exámenes:", error);
         await client.sendMessage(message.from, "No pudimos obtener la información de los exámenes en este momento.");
     }
 }
