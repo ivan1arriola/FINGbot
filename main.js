@@ -7,6 +7,7 @@ const getBedeliaInfo = require('./funciones/bedelia'); // Asegúrate de que este
 const tomaso = require('./funciones/tomaso'); // Asegúrate de que este módulo exista
 const ping = require('./funciones/ping'); // Asegúrate de que este módulo exista
 const fechas = require('./funciones/fechas'); // Asegúrate de que este módulo exista
+const goreJoke = require('./funciones/gore'); // Asegúrate de que este módulo exista
 
 const sendHelp = async (client, message) => {
     const helpMessage = `*Lista de comandos disponibles:*\n
@@ -54,7 +55,8 @@ const commandMap = {
     '!bedelia': getBedeliaInfo,
     '!bedelias': getBedeliaInfo,
     '!fechas': fechas,
-    '!help': sendHelp
+    '!help': sendHelp,
+    '!gore': goreJoke,
 
     
 };
