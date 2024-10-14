@@ -9,6 +9,16 @@ const ping = require('./funciones/ping'); // Asegúrate de que este módulo exis
 const fechas = require('./funciones/fechas'); // Asegúrate de que este módulo exista
 const cuandoParcial = require('./funciones/cuandoParcial'); // Asegúrate de que este módulo exista
 const goreJoke = require('./funciones/gore'); // Asegúrate de que este módulo exista
+
+// Definir sendHelp antes de su uso
+const sendHelp = async (client, message) => {
+    const helpMessage = `*Lista de comandos disponibles:*\n
+    ${Object.keys(commandMap).map((comando, indice) => `${indice + 1}. ${comando}`).join('\n')}`;
+
+    // Enviar el mensaje de ayuda
+    await client.sendMessage(message.from, helpMessage);
+};
+
 // Mapeo de comandos a funciones
 const commandMap = {
     '!examenes': checkExamInfo,
@@ -23,26 +33,6 @@ const commandMap = {
     '!help': sendHelp,
     '!gore': goreJoke,
     '!cuando': cuandoParcial
-    
-};
-const sendHelp = async (client, message) => {
-    /*const helpMessage = `*Lista de comandos disponibles:*\n
-    1. !examenes\n
-    2. !noticias\n
-    3. !ping\n
-    4. !parciales\n
-    5. !Tomaso\n
-    6. !tomaso\n
-    7. !bedelia\n
-    8. !bedelias\n
-    9. !fechas\n
-    10. !help\n
-    11. !cuando`;
-    */
-    const helpMessage=`*Lista de comandos disponibles:*\n
-    ${Object.keys(commandMap).map((comando,indice)=>`${indice}. ${comando}\n`}
-    // Enviar el mensaje de ayuda
-    await client.sendMessage(message.from, helpMessage);
 };
 
 const client = new Client({
@@ -63,8 +53,6 @@ client.on('ready', () => {
     console.log('¡Cliente está listo!');
 });
 
-
-
 // Manejo de mensajes entrantes
 client.on('message_create', async (message) => {
     // Ignorar mensajes enviados por el bot
@@ -73,7 +61,7 @@ client.on('message_create', async (message) => {
     }
 
     // Verifica comandos
-    const [command] = message.body.trim().split(" "); // Agarra la primera sección separada por  espacios
+    const [command] = message.body.trim().split(" "); // Agarra la primera sección separada por espacios
 
     if (command in commandMap) {
         const userId = message.from;
@@ -92,7 +80,5 @@ client.on('group_invite', async (notification) => {
     await client.acceptGroupInvite(notification.id);
 });
 
-
 // Inicializa el cliente
 client.initialize();
-
