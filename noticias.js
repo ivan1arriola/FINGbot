@@ -48,7 +48,4 @@ async function checkNewsInfo() {
     }
 }
 
-// Llamar a la función y manejar la promesa
-checkNewsInfo()
-    .then(news => console.log(news))
-    .catch(error => console.error(error.message));
+module.exports = checkNewsInfo; // Exporta la función para obtener noticias
