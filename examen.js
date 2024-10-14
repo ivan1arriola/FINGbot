@@ -1,9 +1,9 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-const url = 'https://www.fing.edu.uy/es/bedelia/exámenes';
 
-async function checkExamInfo() {
+// Función para comprobar la información de los exámenes
+async function checkExamInfo(client, msg) {
     try {
         // Realiza la solicitud GET
         const response = await axios.get(url);
@@ -15,15 +15,32 @@ async function checkExamInfo() {
         const bodyText = $('body').text(); // Obtén el texto del cuerpo de la página
         const found = bodyText.includes('Diciembre 2024');
 
-        // Devuelve el mensaje según el resultado
+        // Mensajes de respuesta
+        let mensajesRespuesta = [];
+
+        // Devuelve el mensaje según si encuentra la expresión
         if (found) {
-            return `La información sobre los exámenes 2024 ya se encuentra disponible en ${url}`;
+            mensajesRespuesta.push("¡El calendario de exámenes de Diciembre 2024 ya está disponible! 📅📚");
+
+            // Extraer enlaces a PDF que contengan "diciembre" en la URL
+            $('a').each((index, element) => {
+                const href = $(element).attr('href');
+                if (href && href.includes('diciembre') && href.endsWith('.pdf')) {
+                    mensajesRespuesta.push(`Puedes descargar el calendario de exámenes aquí: ${href}`);
+                }
+            });
+
+            // Envía los mensajes a través de WhatsApp
+            for (const mensaje of mensajesRespuesta) {
+                await client.sendMessage(msg.from, mensaje);
+            }
         } else {
-            return 'Aún no hay información de los exámenes de diciembre.';
+            await client.sendMessage(msg.from, "No se encontró información sobre el calendario de exámenes de Diciembre 2024.");
         }
     } catch (error) {
-        return "No pudimos obtener la información de los exámenes en este momento.";
+        console.error("Error al obtener la información de los exámenes:", error);
+        await client.sendMessage(msg.from, "No pudimos obtener la información de los exámenes en este momento.");
     }
 }
 
-module.exports = checkExamInfo;
+module.exports = checkExamInfo; // Exporta la función para comprobar la información de los exámenes

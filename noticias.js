@@ -1,5 +1,6 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
+const { Client } = require('whatsapp-web.js');
 
 // Función para obtener el URL de la sección de noticias
 function getNewsUrl() {
@@ -29,22 +30,27 @@ async function fetchNews(url) {
     }
 }
 
-async function checkNewsInfo() {
-    // Intenta obtener noticias de la página
-    let noticias = await fetchNews(getNewsUrl());
+// Función para comprobar la información de las noticias y enviar los resultados
+async function checkNewsInfo(client, msg) {
+    try {
+        // Intenta obtener noticias de la página
+        const noticias = await fetchNews(getNewsUrl());
 
-    // Filtra y toma solo las últimas 4 noticias
-    const latestNews = noticias.slice(0, 4);
+        // Filtra y toma solo las últimas 4 noticias
+        const latestNews = noticias.slice(0, 4);
 
-    if (latestNews.length > 0) {
-        return latestNews.map(n => 
-            `*${n.title}*\n` + // Título en negrita
-            `_${n.date}_\n` + // Fecha en cursiva
-            `${n.summary}\n` + // Resumen
-            `Leer más: ${n.link}\n` // Enlace
-        ).join('\n\n'); // Unir las noticias con doble línea
-    } else {
-        return 'No se encontraron noticias.';
+        // Formatea las noticias para enviarlas como 4 mensajes separados
+        if (latestNews.length > 0) {
+            for (const news of latestNews) {
+                const mensaje = `📰 ${news.title}\n${news.summary}\n📅 ${news.date}\n🔗 ${news.link}`;
+                await client.sendMessage(msg.from, mensaje); // Envía cada noticia por WhatsApp
+            }
+        } else {
+            await client.sendMessage(msg.from, "No hay noticias disponibles en este momento.");
+        }
+    } catch (error) {
+        console.error("Error al obtener noticias:", error);
+        await client.sendMessage(msg.from, "No pudimos obtener la información de las noticias en este momento.");
     }
 }
 
