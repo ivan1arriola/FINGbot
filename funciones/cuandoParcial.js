@@ -46,6 +46,11 @@ async function cuandoParcial(client, message) {
         keys: null,      // For when targets are objects (see its example usage)
         scoreFn: null,   // For use with `keys` (see its example usage)
         })
+
+    if (res.length === 0) {
+        await message.reply(`No se encontró el curso ${curso}`);
+        return;
+    }
     await message.reply(`El parcial de ${res[0].target} es el ${fechaLegible(fechas[res[0].target])}`)
 }
 module.exports = cuandoParcial;
