@@ -14,14 +14,6 @@ const jokes = [
     "¿Por qué los computadores nunca tienen hambre? Porque ya tienen bytes."
 ];
 
-// Función para enviar un chiste
-const sendJoke = async (client, message) => {
-    const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
-    const emojiJoke = `😂😂 ¡Aquí tienes un chiste! ${randomJoke} 😂😂`;
-    client.sendMessage(message.from, emojiJoke);
-    sendRandomSticker(client, message);
-};
-
 // Función para enviar un chiste y luego un sticker
 const goreJoke = async (client, message) => {
     let msg = "No puedo hacer eso, soy un bot serio. 🤖";
