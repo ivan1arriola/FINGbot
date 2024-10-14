@@ -35,7 +35,7 @@ function fechaLegible(dateTime) {
 
 async function cuandoParcial(client, message) {
     if (message.body.includes("cdiv")) {
-        message.body = "calculo una variable";
+        message.body = "!cuando calculo una variable";
     }
     let curso = /!cuando ([a-zA-Z0-9 ]+)/.exec(message.body)[1];
     let res = fuzzysort.go(curso, Object.keys(fechas), {
