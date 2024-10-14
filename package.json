@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node .",
     "dev": "nodemon .",
-    "background": "screen -Sdmt "BOT" node ."
+    "background": "screen -Sdmt 'BOT' node ."
   },
   "repository": {
     "type": "git",
