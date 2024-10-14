@@ -1,18 +1,25 @@
 const fs = require('fs');
 const path = require('path');
 const { MessageMedia } = require('whatsapp-web.js');
-const joke = require('give-me-a-joke');
 
 // Ruta a la carpeta de stickers
 const stickersDir = path.join(__dirname, '../stickers');
 
+// Lista de chistes predefinidos
+const jokes = [
+    "¿Por qué los pájaros no usan Facebook? Porque ya tienen Twitter.",
+    "¿Qué hace una abeja en el gimnasio? Zum-ba.",
+    "¿Por qué los esqueletos no pelean entre ellos? Porque no tienen agallas.",
+    "¿Cómo organizan una fiesta los gatos? Hacen un gato-cien.",
+    "¿Por qué los computadores nunca tienen hambre? Porque ya tienen bytes."
+];
+
 // Función para enviar un chiste
 const sendJoke = async (client, message) => {
-    joke.getJoke('DAD', 'random', (jokeText) => {
-        const emojiJoke = `😂😂 ¡Aquí tienes un chiste! ${jokeText} 😂😂`;
-        client.sendMessage(message.from, emojiJoke);
-        sendRandomSticker(client, message);
-    });
+    const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+    const emojiJoke = `😂😂 ¡Aquí tienes un chiste! ${randomJoke} 😂😂`;
+    client.sendMessage(message.from, emojiJoke);
+    sendRandomSticker(client, message);
 };
 
 // Función para enviar un chiste y luego un sticker
@@ -27,11 +34,10 @@ const goreJoke = async (client, message) => {
     }, wait);
 
     setTimeout(() => {
-        joke.getJoke('DAD', 'random', (jokeText) => {
-            const emojiJoke = `😂😂 ¡Aquí tienes un chiste! ${jokeText} 😂😂`;
-            client.sendMessage(message.from, emojiJoke);
-            sendRandomSticker(client, message);
-        });
+        const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+        const emojiJoke = `😂😂 ¡Aquí tienes un chiste!  ${randomJoke} 😂😂`;
+        client.sendMessage(message.from, emojiJoke);
+        sendRandomSticker(client, message);
     }, wait + 5000); // espera adicional para el chiste
 };
 
