@@ -5,8 +5,11 @@ const cheerio = require('cheerio');
 // Función para comprobar la información de los exámenes
 async function checkExamInfo(client, msg) {
     try {
+
+        message.reply('Estoy buscando información sobre los exámenes...');
+
         // Realiza la solicitud GET
-        const response = await axios.get(url);
+        const response = await axios.get("https://www.fing.edu.uy/es/bedelia/ex%C3%A1menes");
 
         // Cargar el contenido HTML en Cheerio
         const $ = cheerio.load(response.data);

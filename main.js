@@ -1,6 +1,5 @@
 const { Client } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
-const axios = require('axios');
 const checkExamInfo = require('./examen');
 const checkNewsInfo = require('./noticias'); // Asegúrate de que tienes un módulo para obtener noticias
 const devolverCalendarioParciales = require('./calendarioParciales'); // Asegúrate de que tienes un módulo para obtener calendarios de parciales
@@ -17,9 +16,13 @@ client.on('ready', () => {
 });
 
 client.on('message_create', async (message) => {
+    // Ignora los mensajes enviados por el bot
+    if (message.from === client.info.wid.user) {
+        return;
+    }
+
     // Verifica si el mensaje contiene la etiqueta !examenes
     if (message.body.includes('!examenes')) {
-        message.reply('Estoy buscando información sobre los exámenes...');
         await checkExamInfo(client, message);
     }
 
@@ -30,41 +33,43 @@ client.on('message_create', async (message) => {
 
     // Responder a mensajes de prueba
     if (message.body === '!ping') {
-        // Responde con un mensaje de "pong" con un emoji
         message.reply('pong 🏓');
     }
 
     if (message.body === '!hola') {
-        // Responde con un mensaje de "Hola" con un emoji
         message.reply('¡Hola! 👋');
     }
 
     if (message.body === '!ayuda') {
-        // Responde con un mensaje de ayuda
-        message.reply('¡Hola! Soy un bot de WhatsApp que puede ayudarte a obtener información sobre exámenes y noticias de la FING. Prueba enviando !examenes o !noticias para obtener información actualizada.');
+        // Responde con un mensaje de ayuda más detallado
+        message.reply(
+            '¡Hola! Soy un bot de WhatsApp que puede ayudarte a obtener información sobre exámenes y noticias de la FING.\n\n' +
+            'Aquí tienes los comandos que puedes utilizar:\n' +
+            '1. **!examenes** - Obtén información sobre los exámenes programados.\n' +
+            '2. **!noticias** - Recibe las últimas noticias de la Facultad de Ingeniería.\n' +
+            '3. **!parciales** - Consulta los calendarios de parciales.\n' +
+            '4. **!ping** - Prueba que el bot está activo.\n' +
+            '5. **Gracias** - Respuesta de agradecimiento del bot.\n' +
+            '6. **Adiós**, **Chau**, **Bye** - Despedidas y respuestas del bot.\n\n' +
+            'Si necesitas más información, no dudes en preguntar. ¡Estoy aquí para ayudarte! 😊'
+        );
     }
 
     // Responder a mensajes de agradecimiento
     if (message.body === 'Gracias') {
-        // Responde con un mensaje de agradecimiento
         message.reply('¡De nada! 😊');
     }
 
     // Responder a mensajes de despedida
     if (message.body === 'Adiós') {
-        // Responde con un mensaje de despedida
         message.reply('¡Hasta luego! 👋');
     }
 
-    // Responder a mensajes de despedida
     if (message.body === 'Chau') {
-        // Responde con un mensaje de despedida
         message.reply('¡Chau! 👋');
     }
 
-    // Responder a mensajes de despedida
     if (message.body === 'Bye') {
-        // Responde con un mensaje de despedida
         message.reply('Bye! 👋');
     }
 
@@ -77,4 +82,3 @@ client.on('message_create', async (message) => {
 
 // Inicializa el cliente
 client.initialize();
-
