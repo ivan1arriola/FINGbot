@@ -12,10 +12,11 @@ const goreJoke = require('./funciones/gore'); // Asegúrate de que este módulo 
 const foroReply = require('./funciones/foroRespuestas.js')
 const fs = require('fs')
 const path = require('path')
+const config = require('./utils/config.js')
 // Definir sendHelp antes de su uso
 const sendHelp = async (client, message) => {
     const helpMessage = `*Lista de comandos disponibles:*\n
-    ${Object.keys(commandMap).map((comando, indice) => `${indice + 1}. ${comando}`).join('\n')}`;
+    ${Object.keys(commandMap).map((comando, indice) => `${indice + 1}. ${config.PREFIJO}${comando}`).join('\n')}`;
 
     // Enviar el mensaje de ayuda
     await client.sendMessage(message.from, helpMessage);
@@ -23,19 +24,17 @@ const sendHelp = async (client, message) => {
 
 // Mapeo de comandos a funciones
 const commandMap = {
-    '!examenes': checkExamInfo,
-    '!noticias': checkNewsInfo,
-    '!ping': ping,
-    '!parciales': devolverCalendarioParciales,
-    '!Tomaso': tomaso,
-    '!tomaso': tomaso,
-    '!bedelia': getBedeliaInfo,
-    '!bedelias': getBedeliaInfo,
-    '!fechas': fechas,
-    '!help': sendHelp,
-    '!gore': goreJoke,
-    '!cuando': cuandoParcial,
-    '!foro' : foroReply
+    'examenes': checkExamInfo,
+    'noticias': checkNewsInfo,
+    'ping': ping,
+    'parciales': devolverCalendarioParciales,    'tomaso': tomaso,
+    'bedelia': getBedeliaInfo,
+    'bedelias': getBedeliaInfo,
+    'fechas': fechas,
+    'help': sendHelp,
+    'gore': goreJoke,
+    'cuando': cuandoParcial,
+    'foro' : foroReply
 };
 // Para uso futuro
 function loadModules(modulos_dir){
@@ -84,9 +83,12 @@ client.on('message_create', async (message) => {
     if (message.from === client.info.wid.user) {
         return;
     }
-
+    // Ignorar el texto que no es comando
+    if(!message.body.trim().startsWith(config.PREFIJO)){
+        return;
+    }
     // Verifica comandos
-    const [command] = message.body.trim().split(" "); // Agarra la primera sección separada por espacios
+    const [command] = message.body.trim().toLower().slice(config.PREFIJO.length).split(" "); // Agarra la primera sección separada por espacios
 
     if (command in commandMap) {
         const userId = message.from;
