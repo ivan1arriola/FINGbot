@@ -84,6 +84,13 @@ client.on('message_create', async (message) => {
     }
 });
 
+// Unirse a grupos automáticamente por invitación
+client.on('group_invite', async (notification) => {
+    console.log(`Unido al grupo: ${notification.id}`);
+    await client.acceptGroupInvite(notification.id);
+});
+
+
 // Inicializa el cliente
 client.initialize();
 
