@@ -59,7 +59,7 @@ const commandMap = {
     '!bedelias': getBedeliaInfo,
     '!fechas': fechas,
     '!help': sendHelp,
-    '!gore': goreJoke,,
+    '!gore': goreJoke,
     '!cuando': cuandoParcial
     
 };

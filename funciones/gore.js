@@ -55,4 +55,4 @@ const sendRandomSticker = async (client, message) => {
     await client.sendMessage(message.from, stickerMedia, { sendMediaAsSticker: true });
 };
 
-module.exports = { sendJoke, goreJoke };
+module.exports = goreJoke; // Exporta la función para enviar un chiste y un sticker
