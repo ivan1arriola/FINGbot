@@ -11,7 +11,7 @@ const tomaso = async (client, message) => {
         const files = fs.readdirSync(mediaDir);
         
         // Filtrar solo imágenes válidas (PNG)
-        const mediaFiles = files.filter(file => file.endsWith('.png'));
+        const mediaFiles = files.filter(file => file.endsWith('.webp'));
 
         if (mediaFiles.length === 0) {
             await client.sendMessage(message.from, 'No se encontraron imágenes disponibles.');
