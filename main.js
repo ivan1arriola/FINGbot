@@ -7,6 +7,7 @@ const getBedeliaInfo = require('./funciones/bedelia'); // Asegúrate de que este
 const tomaso = require('./funciones/tomaso'); // Asegúrate de que este módulo exista
 const ping = require('./funciones/ping'); // Asegúrate de que este módulo exista
 const fechas = require('./funciones/fechas'); // Asegúrate de que este módulo exista
+const cuandoParcial = require('./funciones/cuandoParcial'); // Asegúrate de que este módulo exista
 const goreJoke = require('./funciones/gore'); // Asegúrate de que este módulo exista
 
 const sendHelp = async (client, message) => {
@@ -20,8 +21,9 @@ const sendHelp = async (client, message) => {
     7. !bedelia\n
     8. !bedelias\n
     9. !fechas\n
-    10. !help`;
-
+    10. !help\n
+    11. !cuando`;
+    
     // Enviar el mensaje de ayuda
     await client.sendMessage(message.from, helpMessage);
 };
@@ -30,6 +32,7 @@ const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
         args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        executablePath: "chromium"
     }
 });
 
@@ -56,8 +59,8 @@ const commandMap = {
     '!bedelias': getBedeliaInfo,
     '!fechas': fechas,
     '!help': sendHelp,
-    '!gore': goreJoke,
-
+    '!gore': goreJoke,,
+    '!cuando': cuandoParcial
     
 };
 
@@ -69,7 +72,7 @@ client.on('message_create', async (message) => {
     }
 
     // Verifica comandos
-    const command = message.body.trim(); // Elimina espacios innecesarios
+    const [command] = message.body.trim().split(" "); // Agarra la primera sección separada por  espacios
 
     if (command in commandMap) {
         const userId = message.from;
