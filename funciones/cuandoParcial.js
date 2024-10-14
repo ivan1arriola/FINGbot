@@ -42,6 +42,13 @@ function fechaLegible(dateTime) {
     return `${parseInt(día)} de ${mes} a las ${hora}:${minuto}`
 }
 
+function díasHastaParcial(dateTime) {
+    let now = Date.now(); // fecha actual
+    let parcial = Date.parse(dateTime); // fecha del parcial
+    return Math.floor((parcial - now) / 86400000); // cantidad de ms en un día
+}
+
+
 async function cuandoParcial(client, message) {
     if (message.body == "!cuando cdiv") {
         message.body = "!cuando calculo una variable";
@@ -60,6 +67,7 @@ async function cuandoParcial(client, message) {
         await message.reply(`No se encontró el curso ${curso}`);
         return;
     }
-    await message.reply(`El parcial de ${res[0].target} es el ${fechaLegible(fechas[res[0].target])}`)
+    let fecha_legible = fechaLegible(fechas[res[0].target]);
+    await message.reply(`El parcial de ${res[0].target} es el ${fecha_legible} y faltan ${díasHastaParcial(fechas[res[0].target])} días.`)
 }
 module.exports = cuandoParcial;
