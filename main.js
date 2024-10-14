@@ -10,6 +10,8 @@ const fechas = require('./funciones/fechas'); // Asegúrate de que este módulo 
 const cuandoParcial = require('./funciones/cuandoParcial'); // Asegúrate de que este módulo exista
 const goreJoke = require('./funciones/gore'); // Asegúrate de que este módulo exista
 const foroReply = require('./funciones/foroRespuestas.js')
+const fs = require('fs')
+const path = require('path')
 // Definir sendHelp antes de su uso
 const sendHelp = async (client, message) => {
     const helpMessage = `*Lista de comandos disponibles:*\n
@@ -35,7 +37,29 @@ const commandMap = {
     '!cuando': cuandoParcial,
     '!foro' : foroReply
 };
-
+// Para uso futuro
+function loadModules(modulos_dir){
+    modulos = {}
+    try{
+    files=fs.readdirSync(path.join(__dirname,modulos_dir))
+    
+        for(const file of files){
+            try{
+                modulo = require(path.join(__dirname,modulos_dir,file))
+                for(const cmd of modulo){
+                    modulos[cmd.name]=cmd
+                }
+            }catch(error){
+                console.log(`No se pudo cargar el modulo ${file}: ${error}`)
+            }
+        }
+    }catch(error){
+        console.log('Ocurrio un error cargando los modulos')
+    }
+    finally{
+        return modulos;
+    }
+}
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
