@@ -9,7 +9,7 @@ const ping = require('./funciones/ping'); // Asegúrate de que este módulo exis
 const fechas = require('./funciones/fechas'); // Asegúrate de que este módulo exista
 const cuandoParcial = require('./funciones/cuandoParcial'); // Asegúrate de que este módulo exista
 const goreJoke = require('./funciones/gore'); // Asegúrate de que este módulo exista
-
+const foroReply = require('./funciones/foroRespuestas.js')
 // Definir sendHelp antes de su uso
 const sendHelp = async (client, message) => {
     const helpMessage = `*Lista de comandos disponibles:*\n
@@ -32,7 +32,8 @@ const commandMap = {
     '!fechas': fechas,
     '!help': sendHelp,
     '!gore': goreJoke,
-    '!cuando': cuandoParcial
+    '!cuando': cuandoParcial,
+    '!foro' : foroReply
 };
 
 const client = new Client({
