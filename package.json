@@ -1,0 +1,26 @@
+{
+  "name": "fingbot",
+  "version": "1.0.0",
+  "description": "Es un bot para la comunidad de wpp de facultad",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ivan1arriola/FINGbot.git"
+  },
+  "author": "Ivan Arriola",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ivan1arriola/FINGbot/issues"
+  },
+  "homepage": "https://github.com/ivan1arriola/FINGbot#readme",
+  "dependencies": {
+    "axios": "^1.7.7",
+    "cheerio": "^1.0.0",
+    "qrcode-terminal": "^0.12.0",
+    "whatsapp-web.js": "^1.26.0"
+  }
+}
