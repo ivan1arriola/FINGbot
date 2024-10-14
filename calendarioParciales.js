@@ -34,7 +34,7 @@ async function getParcialesCalendar() {
 // Función para devolver los calendarios de parciales
 async function devolverCalendarioParciales(client, msg) {
     try {
-        const calendarios = await getParcalesCalendar(); // Obtiene los calendarios
+        const calendarios = await getParcialesCalendar(); // Obtiene los calendarios
 
         // Verifica si se encontraron calendarios
         if (calendarios.length > 0) {
