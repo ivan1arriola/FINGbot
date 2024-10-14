@@ -19,7 +19,7 @@ El Departamento de Bedelía es el encargado de la gestión y administración de 
 }
 
 module.exports = [
-  {name:'bedelia',info:'Obtiene información sobre Bedelia',args:[]}
+  {name:'bedelia',func:getBedeliaInfo,info:'Obtiene información sobre Bedelia',args:[]}
 ]
 /*
 Exportacion de ejemplo 
