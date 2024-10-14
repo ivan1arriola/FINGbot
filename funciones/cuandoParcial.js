@@ -3,9 +3,15 @@ const fuzzysort = require('fuzzysort')
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { MessageMedia } = require('whatsapp-web.js');
-const execSync = require('child_process').execSync;
+const { execSync } = require('child_process');
 
-execSync("./generarFechasParciales https://www.fing.edu.uy/sites/default/files/2024-10/Calendario%202dos.%20Parciales%202do.%20Semestre%202024.pdf");
+// Enlace al PDF del calendario de parciales
+const calendarioURL = "https://www.fing.edu.uy/sites/default/files/2024-10/Calendario%202dos.%20Parciales%202do.%20Semestre%202024.pdf";
+
+// Ejecutar el comando para generar las fechas de parciales desde el PDF
+//execSync(`generarFechasParciales ${calendarioURL}`);
+
+// Leer el archivo generado que contiene las fechas en formato JSON
 const fechas = JSON.parse(fs.readFileSync('fechasParciales.json'));
 
 const meses = [
