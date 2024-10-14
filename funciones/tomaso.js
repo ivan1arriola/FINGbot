@@ -3,7 +3,7 @@ const path = require('path');
 const { MessageMedia } = require('whatsapp-web.js');
 
 // Ruta a la carpeta de media
-const mediaDir = path.join(__dirname, '../media');
+const mediaDir = path.join(__dirname, '../tomaso');
 
 const tomaso = async (client, message) => {
     try {
@@ -26,7 +26,7 @@ const tomaso = async (client, message) => {
         const media = MessageMedia.fromFilePath(mediaPath);
         
         // Enviar la imagen PNG como archivo multimedia
-        await client.sendMessage(message.from, media);
+        await client.sendMessage(message.from, media, { sendMediaAsSticker: true });
 
         // Enviar un mensaje adicional (opcional)
         await client.sendMessage(message.from, 'Miau 🐱');
