@@ -9,9 +9,24 @@ const ping = require('./funciones/ping'); // Asegúrate de que este módulo exis
 const fechas = require('./funciones/fechas'); // Asegúrate de que este módulo exista
 const cuandoParcial = require('./funciones/cuandoParcial'); // Asegúrate de que este módulo exista
 const goreJoke = require('./funciones/gore'); // Asegúrate de que este módulo exista
-
+// Mapeo de comandos a funciones
+const commandMap = {
+    '!examenes': checkExamInfo,
+    '!noticias': checkNewsInfo,
+    '!ping': ping,
+    '!parciales': devolverCalendarioParciales,
+    '!Tomaso': tomaso,
+    '!tomaso': tomaso,
+    '!bedelia': getBedeliaInfo,
+    '!bedelias': getBedeliaInfo,
+    '!fechas': fechas,
+    '!help': sendHelp,
+    '!gore': goreJoke,
+    '!cuando': cuandoParcial
+    
+};
 const sendHelp = async (client, message) => {
-    const helpMessage = `*Lista de comandos disponibles:*\n
+    /*const helpMessage = `*Lista de comandos disponibles:*\n
     1. !examenes\n
     2. !noticias\n
     3. !ping\n
@@ -23,7 +38,9 @@ const sendHelp = async (client, message) => {
     9. !fechas\n
     10. !help\n
     11. !cuando`;
-    
+    */
+    const helpMessage=`*Lista de comandos disponibles:*\n
+    ${Object.keys(commandMap).map((comando,indice)=>`${indice}. ${comando}\n`}
     // Enviar el mensaje de ayuda
     await client.sendMessage(message.from, helpMessage);
 };
@@ -46,22 +63,7 @@ client.on('ready', () => {
     console.log('¡Cliente está listo!');
 });
 
-// Mapeo de comandos a funciones
-const commandMap = {
-    '!examenes': checkExamInfo,
-    '!noticias': checkNewsInfo,
-    '!ping': ping,
-    '!parciales': devolverCalendarioParciales,
-    '!Tomaso': tomaso,
-    '!tomaso': tomaso,
-    '!bedelia': getBedeliaInfo,
-    '!bedelias': getBedeliaInfo,
-    '!fechas': fechas,
-    '!help': sendHelp,
-    '!gore': goreJoke,
-    '!cuando': cuandoParcial
-    
-};
+
 
 // Manejo de mensajes entrantes
 client.on('message_create', async (message) => {
