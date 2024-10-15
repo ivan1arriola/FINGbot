@@ -17,6 +17,8 @@ function loadModules(modulos_dir){
                 modulo = require(path.join(__dirname,modulos_dir,file))
                 for(const cmd of modulo){
                     modulos[cmd.name]=cmd
+                    modulos[cmd.name].args_size=(cmd.args)?cmd.args.length:0
+                    modulos[cmd.name].min_args=(cmd.args)?cmd.args.filter(arg=>arg.required).length:0
                 }
             }catch(error){
                 console.log(`No se pudo cargar el modulo ${file}: ${error}`)
@@ -159,14 +161,11 @@ client.on('message_create', async (message) => {
         const currentTime = new Date();
         const formattedTime = `${String(currentTime.getHours()).padStart(2, '0')}:${String(currentTime.getMinutes()).padStart(2, '0')}`;
         console.log(`${userId} - ${formattedTime} - Llamando a ${commandMap[command].name || command}...`);
-        let args_amount=0
-        if(commandObj.args && commandObj.args.length>0){
-            args_amount=commandObj.args.length;
-        }
+        
+        
         //obtiene los argumentos
-        let args=message.body.trim().split(" ").slice(1).join(" ").split(" ",args_amount)
-        if(commandObj.min_args && typeof commandObj.min_args =='number' && commandObj.min_args>0 && args.length<commandObj.min_args){
-            
+        let args=message.body.trim().split(" ").slice(1).filter((text)=>text!='').join(" ").split(" ",commandObj.args_size)
+        if(args.length<commandObj.min_args){
             return await message.reply(usage(commandObj));
         }
         // Llama a la función correspondiente
