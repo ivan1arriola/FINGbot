@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { MessageMedia } = require('whatsapp-web.js');
+const sendRandomSticker = require('../utils/sendRandomSticker');
 
 // Ruta a la carpeta de stickers
 const stickersDir = path.join(__dirname, '../stickers');
@@ -23,34 +24,15 @@ const sendJokeAndSticker = async (client, message) => {
 
         setTimeout(async () => {
             const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
-            const emojiJoke = `😂😂${randomJoke} 😂😂`;
+            const emojiJoke = `😂😂${randomJoke} 😂😂
+            `;
             await client.sendMessage(message.from, emojiJoke);
-            await sendRandomSticker(client, message);
+            await sendRandomSticker(stickersDir, client, message);
         }, wait + 5000); // espera adicional para el chiste
     } catch (error) {
         console.error("Error al enviar chiste y sticker:", error);
         await client.sendMessage(message.from, "Ocurrió un error al intentar enviar el chiste.");
     }
-};
-
-// Función para enviar un sticker aleatorio
-const sendRandomSticker = async (client, message) => {
-    const files = fs.readdirSync(stickersDir);
-    const stickerFiles = files.filter(file => file.endsWith('.webp')); // Filtra solo archivos WebP
-
-    if (stickerFiles.length === 0) {
-        console.log('No hay stickers disponibles para enviar.');
-        return;
-    }
-
-    const randomSticker = stickerFiles[Math.floor(Math.random() * stickerFiles.length)];
-    const stickerPath = path.join(stickersDir, randomSticker);
-    
-    // Crear un objeto MessageMedia a partir del sticker
-    const stickerMedia = MessageMedia.fromFilePath(stickerPath);
-    
-    // Enviar el sticker como un archivo multimedia
-    await client.sendMessage(message.from, stickerMedia, { sendMediaAsSticker: true });
 };
 
 // Exporta la función con la estructura adecuada

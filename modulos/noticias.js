@@ -1,5 +1,3 @@
-// noticias.js
-
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { MessageMedia } = require('whatsapp-web.js');
@@ -23,11 +21,15 @@ async function fetchNews(url) {
             const link = 'https://www.fing.edu.uy' + $(element).find('a').attr('href');
             const date = $(element).find('time').text().trim(); // Obtén la fecha de publicación
 
-            noticias.push({ title, summary, link, date });
+            // Solo agrega noticias que tienen título y resumen
+            if (title && summary) {
+                noticias.push({ title, summary, link, date });
+            }
         });
 
         return noticias; // Retorna las noticias obtenidas
     } catch (error) {
+        console.error("Error al obtener noticias:", error);
         throw new Error("No pudimos obtener la información de las noticias en este momento.");
     }
 }
@@ -53,11 +55,12 @@ async function checkNewsInfo(client, msg, args) {
             await client.sendMessage(msg.from, "No hay noticias disponibles en este momento.");
         }
     } catch (error) {
+        console.error("Error al enviar noticias:", error);
         await client.sendMessage(msg.from, "No pudimos obtener la información de las noticias en este momento.");
     }
 }
 
 // Exportar el comando en el formato adecuado
 module.exports = [
-  { name: 'noticias', func: checkNewsInfo, info: 'Obtiene las últimas noticias de la Facultad de Ingeniería', args: ['<n>'] }
+    { name: 'noticias', func: checkNewsInfo, info: 'Obtiene las últimas noticias de la Facultad de Ingeniería', args: ['<n>'] }
 ];
