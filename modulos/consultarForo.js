@@ -32,6 +32,7 @@ module.exports = [
         name: 'consultarforo',
         func: consultarForo,
         info: 'Obtiene las últimas 3 respuestas de un foro dado por ID',
-        args: ['<id>'],
+        args: [{name:'id',info:'Id del foro',required:true}],
+        min_args:1
     }
 ];
