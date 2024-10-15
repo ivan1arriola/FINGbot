@@ -20,7 +20,7 @@ El Departamento de Bedelía es el encargado de la gestión y administración de 
 
 module.exports = [
   { 
-      name: 'infoBedelias', 
+      name: 'infobedelias', 
       func: getInfoBedelia, 
       info: 'Obtiene información sobre Bedelía', 
       args: [] 

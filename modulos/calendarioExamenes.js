@@ -48,5 +48,5 @@ async function checkCalendarioExamenes(client, message, args) {
 
 // Exportar el comando en el formato adecuado
 module.exports = [
-    { name: 'calendarioExamenes', func: checkCalendarioExamenes, info: 'Obtiene información sobre el calendario de exámenes disponibles', args: [] }
+    { name: 'calendarioexamenes', func: checkCalendarioExamenes, info: 'Obtiene información sobre el calendario de exámenes disponibles', args: [] }
 ];

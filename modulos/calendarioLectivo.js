@@ -60,5 +60,5 @@ const sendCalendarioLectivo = async (client, message, args) => {
 
 // Exportar el comando en el formato adecuado
 module.exports = [
-    { name: 'calendarioLectivo', func: sendCalendarioLectivo, info: 'Obtiene información sobre las fechas de cursos, parciales y exámenes.', args: [] }
+    { name: 'calendariolectivo', func: sendCalendarioLectivo, info: 'Obtiene información sobre las fechas de cursos, parciales y exámenes.', args: [] }
 ];

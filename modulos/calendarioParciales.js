@@ -56,5 +56,5 @@ async function devolverCalendarioParciales(client, message, args) {
 
 // Exportar el comando en el formato adecuado
 module.exports = [
-  { name: 'calendarioParciales', func: devolverCalendarioParciales, info: 'Obtiene el calendario de los parciales disponibles', args: [] }
+  { name: 'calendarioparciales', func: devolverCalendarioParciales, info: 'Obtiene el calendario de los parciales disponibles', args: [] }
 ];

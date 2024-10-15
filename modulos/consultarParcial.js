@@ -80,7 +80,7 @@ async function consultarParcial(client, message) {
 // Exporta la función con la estructura adecuada
 module.exports = [
     {
-        name: 'consultarParcial',
+        name: 'consultarparcial',
         func: consultarParcial,
         info: 'Consulta la fecha de un parcial de un curso específico.',
         args: ['<curso>'],

@@ -29,7 +29,7 @@ async function consultarForo(client, message) {
 // Exporta la función con la estructura adecuada
 module.exports = [
     {
-        name: 'consultarForo',
+        name: 'consultarforo',
         func: consultarForo,
         info: 'Obtiene las últimas 3 respuestas de un foro dado por ID',
         args: ['<id>'],
