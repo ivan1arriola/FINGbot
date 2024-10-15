@@ -7,14 +7,15 @@ async function getForumLastReplies(forum_id,limit){
     try{
         const r=await axios.get(url)
         const $=cheerio.load(r.data);
-        const publicaciones=$('th').map(function(){
-        let publicacion=$(this).find('a')
-        return {
+        const publicaciones=$('th').map(
+            function(){
+            let publicacion=$(this).find('a')
+            return {
               titulo:publicacion.attr('title'),
               url:publicacion.attr('href')  
-        }
-    }).toArray().filter(e=>e.titulo)
-    return limit?publicaciones.slice(0,limit+1):publicaciones;
+                   }
+            }).toArray().filter(e=>e.titulo);
+        return limit?publicaciones.slice(0,limit+1):publicaciones;
     }catch{
         return []
     }
