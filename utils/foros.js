@@ -6,10 +6,7 @@ async function getForumLastReplies(forum_id,limit){
     let r;
     try{
         r=await axios.get(url)
-    }catch{
-     return [] 
-    }
-    try{
+    
     const $=cheerio.load(r.data);
     const publicaciones=$('th').map(function(){
         let publicacion=$(this).find('a')
@@ -18,9 +15,9 @@ async function getForumLastReplies(forum_id,limit){
               url:publicacion.attr('href')  
         }
     }).toArray().filter(e=>e.titulo)
+    return limit?publicaciones.slice(0,limit+1):publicaciones;
     }catch{
         return []
     }
-    return limit?publicaciones.slice(0,limit+1):publicaciones;
 }
 module.exports=getForumLastReplies
