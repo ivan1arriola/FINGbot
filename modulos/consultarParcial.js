@@ -7,6 +7,7 @@ const calendarioURL = "https://www.fing.edu.uy/sites/default/files/2024-10/Calen
 // Leer el archivo generado que contiene las fechas en formato JSON
 const fechas = JSON.parse(fs.readFileSync('fechasParciales.json', 'utf-8'));
 
+
 const meses = [
     "enero", "febrero", "marzo", "abril", "mayo", "junio", 
     "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
@@ -37,16 +38,24 @@ function díasHastaParcial(dateTime) {
 /**
  * @param {object} client
  * @param {object} message
+ * @param {object} args
  */
-async function consultarParcial(client, message) {
+async function consultarParcial(client, message, args) {
     try {
+
+        message.body = message.body.toLowerCase();
+
         // Normalizar el comando si es un alias
-        if (message.body === "!cuando cdiv") {
-            message.body = "!cuando calculo una variable";
+        if (message.body === "!consultarparcial cdiv") {
+            message.body = "!consultarparcial calculo una variable";
         }
 
+        console.log("Consultando fecha de parcial...");
+        console.log("Mensaje:", message.body);
+        console.log("args:", args);
+
         // Extraer el nombre del curso del mensaje
-        let match = /!cuando ([a-zA-Z0-9 ]+)/.exec(message.body);
+        let match = /!consultarparcial ([a-zA-Z0-9 ]+)/.exec(message.body);
         if (!match || match.length < 2) {
             await message.reply("No pude reconocer el curso. Asegúrate de escribir el nombre correctamente.");
             return;
