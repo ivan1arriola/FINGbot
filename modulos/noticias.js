@@ -64,5 +64,6 @@ async function checkNewsInfo(client, msg, args) {
 
 // Exportar el comando en el formato adecuado
 module.exports = [
-    { name: 'noticias', func: checkNewsInfo, info: 'Obtiene las últimas noticias de la Facultad de Ingeniería', args: ['<n>'] }
+    { name: 'noticias', func: checkNewsInfo, info: 'Obtiene las últimas noticias de la Facultad de Ingeniería', 
+     args: [{name:'n',info:'Cantidad de noticias'}] }
 ];

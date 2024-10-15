@@ -32,12 +32,25 @@ function loadModules(modulos_dir){
 const commandMap = loadModules('modulos')
 
 
-
+function usage(command){
+   const mapcmd = function(arg){return arg.required?`<${cmd.name}>`:`[${cmd.name}]`}
+   return `${config.PREFIJO}${command.name} ${command.args!==undefined?(command.args.map(cmd=>mapcmd(cmd)).join(' ')+' '):''}`
+}
 
 // Definir sendHelp antes de su uso
-const sendHelp = async (client, message) => {
+const sendHelp = async (client, message,args) => {
+    if (args.length==1){
+        let command = args[0].toLowerCase();
+        if(commandMap[command]){
+            command=commandMap[command];
+            return await message.reply(`Ayuda: ${usage(command)}- ${command.info}`)
+        }else{
+           return await message.reply(`Comando desconocido: ${command}`)
+        }
+    }
     const helpMessage = `*Lista de comandos disponibles:*\n
-    ${Object.keys(commandMap).map((comando, indice) => `${indice + 1}. ${config.PREFIJO}${comando}`).join('\n')}`;
+    ${Object.keys(commandMap).map((comando, indice) => `${indice + 1}. ${usage(commandMap[comando]}`).join('\n')}\n
+    Simbolos: <> - requerido, [] - opcional`;
 
     // Enviar el mensaje de ayuda
     await client.sendMessage(message.from, helpMessage);
@@ -48,7 +61,7 @@ commandMap['help'] = {
     name: 'help',
     func: sendHelp,
     info: 'Muestra la lista de comandos disponibles',
-    args: []
+    args: [{name:'comando',info:'Ver ayuda especifica de un comando'}]
 };
 
 console.log('Comandos cargados:', Object.keys(commandMap).join(', '));
@@ -94,11 +107,20 @@ client.on('message_create', async (message) => {
     const [command] = message.body.trim().toLowerCase().slice(config.PREFIJO.length).split(" "); // Agarra la primera sección separada por espacios
 
     if (command in commandMap && typeof commandMap[command].func === 'function') {
+        const commandObj=commandMap[command];
         const userId = message.from;
         const currentTime = new Date();
         const formattedTime = `${String(currentTime.getHours()).padStart(2, '0')}:${String(currentTime.getMinutes()).padStart(2, '0')}`;
         console.log(`${userId} - ${formattedTime} - Llamando a ${commandMap[command].name || command}...`);
-
+        let args_amount=0
+        if(commandObj.args && commandObj.args.length>0){
+            args_amount=commandObj.args.length;
+        }
+        //obtiene los argumentos
+        let args=message.body.trim().split(" ").slice(1).join(" ").split(" ",args_amount)
+        if(commandObj.min_args && typeof commandObj.min_args =='number' && typeof commandObj.min_args>0 && args.length<commandObj.min_args){
+            return await message.reply(usage(commandObj));
+        }
         // Llama a la función correspondiente
         await commandMap[command].func(client, message);
     } else {
