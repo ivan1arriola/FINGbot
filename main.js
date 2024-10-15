@@ -48,7 +48,7 @@ function listParameters(command){
 
 // Definir sendHelp antes de su uso
 const sendHelp = async (client, message, args) => {
-    if (args && args.length === 1) {
+    if (args && args.length === 1 && args[0].trim().length>0) {
         let command = args[0].toLowerCase();
         if (commandMap[command]) {
             command = commandMap[command];
