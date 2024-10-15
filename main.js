@@ -175,12 +175,51 @@ client.on('message_create', async (message) => {
     }
 });
 
+client.on('message_revoke_everyone', async (message) => {
+    // Verifica si el mensaje fue eliminado por todos
+    if (message.fromMe) {
+        return;
+    }
 
-// Unirse a grupos automáticamente por invitación
-client.on('group_invite', async (notification) => {
-    console.log(`Unido al grupo: ${notification.id}`);
-    await client.acceptGroupInvite(notification.id);
+    // Enviar un mensaje de advertencia
+    await client.sendMessage(message.from, '🚨🚨🚨 Alguien eliminó un mensaje en este chat. 🚨🚨🚨');
 });
+
+client.on('message_create', async (message) => {
+    const chat = await message.getChat();
+    if (chat.isGroup) {
+        return;
+    }
+
+    if (message.from === client.info.wid.user) {
+        return;
+    }
+
+    const mensajesAnteriores = await chat.fetchMessages({ limit: 5 });
+    if (mensajesAnteriores.length === 0) {
+        iniciarChat(client, message, chat);
+    }
+
+    const ultimoMensaje = mensajesAnteriores[mensajesAnteriores.length - 1];
+    if (ultimoMensaje.fromMe) {
+        iniciarChat(client, message, chat);
+    }
+
+    // Ultimo mensaje hace mas de 5 minutos
+    if (new Date() - ultimoMensaje.timestamp > 5 * 60 * 1000) {
+        iniciarChat(client, message, chat);
+    }
+}
+);
+
+async function iniciarChat(client, message, chat) {
+    await chat.sendMessage('¡Hola! Soy un bot creado por estudiantes de la FING para ayudarte con información sobre cursos y otras cosas. Si necesitas ayuda, escribe !help.');
+}
+
+
+
+
+
 
 // Inicializa el cliente
 client.initialize();
