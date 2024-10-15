@@ -13,7 +13,6 @@ async function buscarEva(client, message, args) {
 
         // Realizar la búsqueda en Google
         const googleSearchUrl = `https://www.google.com/search?q=FING+EVA+${encodeURIComponent(curso)}`;
-        console.log(`Buscando en Google: ${googleSearchUrl}`);
         
         // Configurar las cabeceras para evitar el bloqueo de Google
         const response = await axios.get(googleSearchUrl, {
@@ -28,8 +27,7 @@ async function buscarEva(client, message, args) {
         let foundLink = null;
         $('a').each((index, element) => {
             const link = $(element).attr('href');
-            console.log(`Enlace encontrado: ${link}`);
-            if (link && link.includes('eva.fing.edu.uy')) {
+            if (link && link.includes('https://eva.fing.edu.uy/course/view.php?id=')) {
                 foundLink = link;
                 return false; // Salir del loop
             }
