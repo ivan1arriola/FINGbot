@@ -38,6 +38,7 @@ async function fetchNews(url) {
 async function checkNewsInfo(client, msg, args) {
     try {
         const cantidad = args[0] ? Math.min(parseInt(args[0]), 4) : 1; // Cantidad de noticias (máx 4, por defecto 1)
+        console.log(`Obteniendo las últimas ${cantidad} noticias...`);
 
         // Intenta obtener noticias de la página
         const noticias = await fetchNews(getNewsUrl());
