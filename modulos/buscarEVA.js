@@ -50,6 +50,6 @@ module.exports = [
         name: 'buscareva',
         func: buscarEva,
         info: 'Busca en Google el EVA del curso especificado y devuelve el primer enlace.',
-        args: ['<curso>'],
+        args: [{name:'curso',info:'Nombre del curso a buscar',required:true}],
     }
 ];
