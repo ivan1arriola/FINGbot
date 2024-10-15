@@ -3,6 +3,7 @@ const qrcode = require('qrcode-terminal');
 const fs = require('fs')
 const path = require('path')
 const config = require('./utils/config.js')
+const detectarHackeo = require('./utils/detectarHackeo.js');
 
 
 // Cargar módulos
@@ -113,6 +114,37 @@ client.on('message_create', async (message) => {
     if (!message.body.trim().startsWith(config.PREFIJO)) {
         return;
     }
+
+    // Comprobar si el mensaje es sospechoso
+    if (detectarHackeo(message)) {
+        await message.reply("Se ha detectado un comportamiento sospechoso en tu mensaje. 😠😡 Tu acceso ha sido registrado.");
+
+        // Guardar información del usuario
+        const userInfo = {
+            from: message.from,
+            timestamp: new Date().toISOString(),
+            body: message.body
+        };
+
+        // Guardar en un archivo JSON
+        const filePath = path.join(__dirname, 'sospechosos.json');
+
+        // Leer el archivo existente o crear uno nuevo
+        let data = [];
+        if (fs.existsSync(filePath)) {
+            const fileData = fs.readFileSync(filePath);
+            data = JSON.parse(fileData);
+        }
+
+        // Agregar el nuevo registro
+        data.push(userInfo);
+
+        // Guardar de nuevo el archivo
+        fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+        
+        return; // No procesar el comando
+    }
+
 
     // Verifica comandos
     const [command] = message.body.trim().toLowerCase().slice(config.PREFIJO.length).split(" "); // Agarra la primera sección separada por espacios
