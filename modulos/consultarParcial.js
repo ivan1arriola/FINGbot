@@ -83,6 +83,7 @@ module.exports = [
         name: 'consultarparcial',
         func: consultarParcial,
         info: 'Consulta la fecha de un parcial de un curso específico.',
-        args: ['<curso>'],
+        args: [{name:'curso',info:'Curso a consultar',required:true}],
+        min_args:1
     }
 ];
