@@ -33,8 +33,8 @@ const commandMap = loadModules('modulos')
 
 
 function usage(command){
-   const mapcmd = function(arg){return arg.required?`<${cmd.name}>`:`[${cmd.name}]`}
-   return `${config.PREFIJO}${command.name} ${command.args!==undefined?(command.args.map(cmd=>mapcmd(cmd)).join(' ')+' '):''}`
+   const maparg = function(arg){return arg.required?`<${arg.name}>`:`[${arg.name}]`}
+   return `${config.PREFIJO}${command.name} ${command.args!==undefined?(command.args.map(arg=>maparg(arg)).join(' ')+' '):''}`
 }
 
 function listParameters(command){
