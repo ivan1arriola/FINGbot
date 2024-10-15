@@ -77,18 +77,25 @@ client.on('ready', () => {
     console.log('¡Cliente está listo!');
 });
 
-// Manejo de mensajes entrantes
 client.on('message_create', async (message) => {
     // Ignorar mensajes enviados por el bot
     if (message.from === client.info.wid.user) {
         return;
     }
-    // Ignorar el texto que no es comando
-    if(!message.body.trim().startsWith(config.PREFIJO)){
+
+    // Verificar si el cuerpo del mensaje es una cadena antes de manipularla
+    if (typeof message.body !== 'string') {
+        console.log('El mensaje no contiene texto, es probable que sea un archivo multimedia o vacío.');
         return;
     }
+
+    // Ignorar el texto que no es comando
+    if (!message.body.trim().startsWith(config.PREFIJO)) {
+        return;
+    }
+
     // Verifica comandos
-    const [command] = message.body.trim().toLower().slice(config.PREFIJO.length).split(" "); // Agarra la primera sección separada por espacios
+    const [command] = message.body.trim().toLowerCase().slice(config.PREFIJO.length).split(" "); // Agarra la primera sección separada por espacios
 
     if (command in commandMap) {
         const userId = message.from;
@@ -100,6 +107,7 @@ client.on('message_create', async (message) => {
         await commandMap[command](client, message);
     }
 });
+
 
 // Unirse a grupos automáticamente por invitación
 client.on('group_invite', async (notification) => {
