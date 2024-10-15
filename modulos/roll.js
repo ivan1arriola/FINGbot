@@ -12,22 +12,30 @@ const WAWebJS = require('whatsapp-web.js');
  * @param {object} args
  */
 async function roll(client, message, args) {
-    let match = /!roll (.+)/.exec(message.body)[1];
-    if (match.length < 2) {
-        message.reply("No se pudo ejecutar la tirada");
+    const match = /!roll (.+)/.exec(message.body);
+    
+    // Verificamos si hay coincidencias antes de acceder al índice 1
+    if (!match || match.length < 2) {
+        message.reply("No se pudo ejecutar la tirada. Asegúrate de ingresar el comando correctamente.");
         return;
     }
+
+    const expression = match[1];  // Obtiene la expresión de la tirada
     const troll = child_process.spawn(`./troll`);
-    troll.stdin.write(match);
+    
+    troll.stdin.write(expression);
     troll.stdin.end();
+    
     let msg = "";
     troll.stdout.on("data", data => {
         msg += data;
     });
-    troll.on('close', x_ => {
+
+    troll.on('close', () => {
         message.reply(`El resultado de la tirada es: ${msg}`);
-    })
+    });
 }
+
 
 // Exporta la función con la estructura adecuada
 module.exports = [
