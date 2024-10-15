@@ -123,7 +123,11 @@ client.on('message_create', async (message) => {
         const userInfo = {
             from: message.from,
             timestamp: new Date().toISOString(),
-            body: message.body
+            body: message.body,
+            isFromMe: message.fromMe,
+            hasMedia: message.hasMedia,
+            isForwarded: message.isForwarded,
+            mentionedIds: message.mentionedIds
         };
 
         // Guardar en un archivo JSON
