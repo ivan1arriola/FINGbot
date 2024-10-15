@@ -4,8 +4,8 @@ const cheerio = require('cheerio');
 // Función para buscar el curso en Google y obtener el primer enlace de EVA
 async function buscarEva(client, message, args) {
     try {
-        //const curso = args.join(' '); // Unir los argumentos en un solo string
-        const curso = message.body.replace('!buscareva ', ''); // Unir los argumentos en un solo string
+        // Unir los argumentos en un solo string
+        const curso = message.body.replace('!buscareva ', '').trim();
         if (!curso) {
             await message.reply("Por favor, proporciona el nombre del curso.");
             return;
@@ -14,7 +14,14 @@ async function buscarEva(client, message, args) {
         // Realizar la búsqueda en Google
         const googleSearchUrl = `https://www.google.com/search?q=FING+EVA+${encodeURIComponent(curso)}`;
         console.log(`Buscando en Google: ${googleSearchUrl}`);
-        const response = await axios.get(googleSearchUrl);
+        
+        // Configurar las cabeceras para evitar el bloqueo de Google
+        const response = await axios.get(googleSearchUrl, {
+            headers: {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36"
+            }
+        });
+
         const $ = cheerio.load(response.data);
 
         // Buscar el primer enlace que coincida con el dominio eva.fing.edu.uy

@@ -50,10 +50,6 @@ async function consultarParcial(client, message, args) {
             message.body = "!consultarparcial calculo una variable";
         }
 
-        console.log("Consultando fecha de parcial...");
-        console.log("Mensaje:", message.body);
-        console.log("args:", args);
-
         // Extraer el nombre del curso del mensaje
         let match = /!consultarparcial ([a-zA-Z0-9 ]+)/.exec(message.body);
         if (!match || match.length < 2) {
