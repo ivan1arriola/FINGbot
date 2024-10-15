@@ -3,12 +3,11 @@ const cheerio=require('cheerio')
 const readline = require('readline')
 async function getForumLastReplies(forum_id,limit){
     const url=`https://eva.fing.edu.uy/mod/forum/view.php?id=${forum_id}`
-    let r;
-    try{
-        r=await axios.get(url)
     
-    const $=cheerio.load(r.data);
-    const publicaciones=$('th').map(function(){
+    try{
+        const r=await axios.get(url)
+        const $=cheerio.load(r.data);
+        const publicaciones=$('th').map(function(){
         let publicacion=$(this).find('a')
         return {
               titulo:publicacion.attr('title'),
