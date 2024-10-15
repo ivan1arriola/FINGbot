@@ -93,14 +93,16 @@ client.on('message_create', async (message) => {
     // Verifica comandos
     const [command] = message.body.trim().toLowerCase().slice(config.PREFIJO.length).split(" "); // Agarra la primera sección separada por espacios
 
-    if (command in commandMap) {
+    if (command in commandMap && typeof commandMap[command].func === 'function') {
         const userId = message.from;
         const currentTime = new Date();
         const formattedTime = `${String(currentTime.getHours()).padStart(2, '0')}:${String(currentTime.getMinutes()).padStart(2, '0')}`;
         console.log(`${userId} - ${formattedTime} - Llamando a ${commandMap[command].name || command}...`);
 
         // Llama a la función correspondiente
-        await commandMap[command](client, message);
+        await commandMap[command].func(client, message);
+    } else {
+        await client.sendMessage(message.from, `El comando "${command}" no es válido.`);
     }
 });
 

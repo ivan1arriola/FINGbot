@@ -5,14 +5,9 @@ const { MessageMedia } = require('whatsapp-web.js');
 // Ruta a la carpeta de stickers
 const stickersDir = path.join(__dirname, '../stickers');
 
-// Lista de chistes predefinidos
-const jokes = [
-    "¿Por qué los pájaros no usan Facebook? Porque ya tienen Twitter.",
-    "¿Qué hace una abeja en el gimnasio? Zum-ba.",
-    "¿Por qué los esqueletos no pelean entre ellos? Porque no tienen agallas.",
-    "¿Cómo organizan una fiesta los gatos? Hacen un gato-cien.",
-    "¿Por qué los computadores nunca tienen hambre? Porque ya tienen bytes."
-];
+// Cargar chistes desde el archivo JSON
+const jokesPath = path.join(__dirname, '../chistes.json');
+const jokes = JSON.parse(fs.readFileSync(jokesPath, 'utf-8'));
 
 // Función para enviar un chiste y un sticker
 const sendJokeAndSticker = async (client, message) => {
@@ -28,7 +23,7 @@ const sendJokeAndSticker = async (client, message) => {
 
         setTimeout(async () => {
             const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
-            const emojiJoke = `😂😂 ¡Aquí tienes un chiste!  ${randomJoke} 😂😂`;
+            const emojiJoke = `😂😂${randomJoke} 😂😂`;
             await client.sendMessage(message.from, emojiJoke);
             await sendRandomSticker(client, message);
         }, wait + 5000); // espera adicional para el chiste
@@ -61,7 +56,7 @@ const sendRandomSticker = async (client, message) => {
 // Exporta la función con la estructura adecuada
 module.exports = [
     {
-        name: 'goreJoke',
+        name: 'gore',
         func: sendJokeAndSticker,
         info: 'Envía un chiste y un sticker',
         args: [],
