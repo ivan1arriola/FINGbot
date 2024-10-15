@@ -12,6 +12,11 @@ async function info(client,message,args){
                           `Versión de Node.js: ${nodeVersion}\n`+
                           `Plataforma: ${platform}(${arch})`);
 }
-module.exports={name:'botinfo',
-                func:info,
-                info:'Ver informacion del bot'}
+module.exports= [
+    {
+        name: 'info',
+        func: info,
+        info: 'Información sobre el bot.',
+        args: [],
+    }
+];
