@@ -13,9 +13,6 @@ async function sendDadoSticker (client, message, args) {
     try {
         // Obtener dir de dados
         await sendRandomSticker(mediaDir, client, message);
-
-        // Enviar un mensaje adicional (opcional)
-        await client.sendMessage(message.from, '🎲');
     } catch (error) {
         console.error('Error al enviar la imagen:', error);
         await client.sendMessage(message.from, 'Hubo un error al enviar la imagen.');
