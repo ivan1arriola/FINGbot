@@ -48,6 +48,16 @@ module.exports = [
 ];
 ```
 
+### Descripción de los scripts en `package.json`:
+
+- **`test`**: Muestra un mensaje de error por falta de pruebas configuradas.
+- **`start`**: Inicia el bot en segundo plano usando `screen`.
+- **`stop`**: Detiene la sesión `fingbot` de `screen` y el bot.
+- **`logs`**: Muestra los logs reconectando a la sesión `fingbot`.
+- **`dev`**: Ejecuta el bot en modo de desarrollo con `nodemon`.
+- **`clean`**: Elimina `node_modules`, `package-lock.json` y `.wwebjs*`, luego reinstala dependencias.
+
+
 ## Contribuciones
 
 Si deseas contribuir al desarrollo de FINGbot, puedes hacerlo a través de la creación de nuevos módulos o la mejora de los existentes. Para ello, sigue las instrucciones de la sección anterior y envía un *pull request* con tus cambios.

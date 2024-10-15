@@ -5,10 +5,11 @@
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "screen -dmS fingbot node main.js",
-    "stop": "screen -X -S fingbot quit",
+    "start": "screen -dmS fingbot node main.js && echo 'Bot iniciado en segundo plano con screen.'",
+    "stop": "screen -S fingbot -X quit && echo 'Bot detenido.'",
+    "logs": "screen -r fingbot || echo 'No se está ejecutando el bot.'",
     "dev": "nodemon main.js",
-    "logs": "screen -r fingbot"
+    "clean": "rm -rf node_modules && rm -rf package-lock.json .wwebjs* && npm install"
   },
   "repository": {
     "type": "git",
