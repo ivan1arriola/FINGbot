@@ -165,7 +165,8 @@ client.on('message_create', async (message) => {
         }
         //obtiene los argumentos
         let args=message.body.trim().split(" ").slice(1).join(" ").split(" ",args_amount)
-        if(commandObj.min_args && typeof commandObj.min_args =='number' && typeof commandObj.min_args>0 && args.length<commandObj.min_args){
+        if(commandObj.min_args && typeof commandObj.min_args =='number' && commandObj.min_args>0 && args.length<commandObj.min_args){
+            
             return await message.reply(usage(commandObj));
         }
         // Llama a la función correspondiente
