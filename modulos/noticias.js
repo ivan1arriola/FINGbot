@@ -1,6 +1,8 @@
+// noticias.js
+
 const axios = require('axios');
 const cheerio = require('cheerio');
-const { Client } = require('whatsapp-web.js');
+const { MessageMedia } = require('whatsapp-web.js');
 
 // Función para obtener el URL de la sección de noticias
 function getNewsUrl() {
@@ -31,15 +33,17 @@ async function fetchNews(url) {
 }
 
 // Función para comprobar la información de las noticias y enviar los resultados
-async function checkNewsInfo(client, msg) {
+async function checkNewsInfo(client, msg, args) {
     try {
+        const cantidad = args[0] ? Math.min(parseInt(args[0]), 4) : 1; // Cantidad de noticias (máx 4, por defecto 1)
+
         // Intenta obtener noticias de la página
         const noticias = await fetchNews(getNewsUrl());
 
-        // Filtra y toma solo las últimas 4 noticias
-        const latestNews = noticias.slice(0, 4);
+        // Filtra y toma las últimas n noticias
+        const latestNews = noticias.slice(0, cantidad);
 
-        // Formatea las noticias para enviarlas como 4 mensajes separados
+        // Formatea las noticias para enviarlas como mensajes
         if (latestNews.length > 0) {
             for (const news of latestNews) {
                 const mensaje = `📰 ${news.title}\n${news.summary}\n📅 ${news.date}\n🔗 ${news.link}`;
@@ -53,4 +57,7 @@ async function checkNewsInfo(client, msg) {
     }
 }
 
-module.exports = checkNewsInfo; // Exporta la función para obtener noticias
+// Exportar el comando en el formato adecuado
+module.exports = [
+  { name: 'noticias', func: checkNewsInfo, info: 'Obtiene las últimas noticias de la Facultad de Ingeniería', args: ['<n>'] }
+];

@@ -1,3 +1,5 @@
+// calendarioParciales.js
+
 const axios = require('axios');
 const cheerio = require('cheerio');
 const { MessageMedia } = require('whatsapp-web.js');
@@ -32,7 +34,7 @@ async function getParcialesCalendar() {
 }
 
 // Función para devolver los calendarios de parciales
-async function devolverCalendarioParciales(client, message) {
+async function devolverCalendarioParciales(client, message, args) {
     try {
         await message.reply('Estoy buscando información sobre los calendarios de parciales...');
 
@@ -52,6 +54,7 @@ async function devolverCalendarioParciales(client, message) {
     }
 }
 
-module.exports = [{name:'parciales',
-                   info:'Obtiene el calendario de los parciales disponibles'
-                  }]; // Exporta la función para devolver los calendarios de parciales
+// Exportar el comando en el formato adecuado
+module.exports = [
+  { name: 'calendarioParciales', func: devolverCalendarioParciales, info: 'Obtiene el calendario de los parciales disponibles', args: [] }
+];

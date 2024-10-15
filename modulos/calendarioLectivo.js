@@ -1,6 +1,8 @@
+// calendarioLectivo.js
+
 const moment = require('moment'); // Asegúrate de tener moment.js instalado
 
-const sendFechas = async (client, message) => {
+const sendCalendarioLectivo = async (client, message, args) => {
     const now = moment(); // Fecha actual
 
     // Definición de las fechas
@@ -56,4 +58,7 @@ const sendFechas = async (client, message) => {
     await client.sendMessage(message.from, mensaje);
 };
 
-module.exports = sendFechas; // Exporta la función para usarla en otras partes del código
+// Exportar el comando en el formato adecuado
+module.exports = [
+    { name: 'calendarioLectivo', func: sendCalendarioLectivo, info: 'Obtiene información sobre las fechas de cursos, parciales y exámenes.', args: [] }
+];

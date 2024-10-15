@@ -1,4 +1,6 @@
-const ping = async (client, message) => {
+// ping.js
+
+async function ping(client, message, args) {
     try {
         const userId = message.from;
         const currentTime = new Date();
@@ -17,6 +19,9 @@ const ping = async (client, message) => {
             console.error("Error al enviar el mensaje de error: ", innerError.message);
         }
     }
-};
+}
 
-module.exports = ping;
+// Exportar el comando con el formato adecuado
+module.exports = [
+  { name: 'ping', func: ping, info: 'Responde con pong 🏓', args: [] }
+];

@@ -1,18 +1,17 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
-const checkExamInfo = require('./funciones/examen'); // Asegúrate de que este módulo exista
-const checkNewsInfo = require('./funciones/noticias'); // Asegúrate de que este módulo exista
-const devolverCalendarioParciales = require('./funciones/calendarioParciales'); // Asegúrate de que este módulo exista
-const getBedeliaInfo = require('./funciones/bedelia'); // Asegúrate de que este módulo exista
-const tomaso = require('./funciones/tomaso'); // Asegúrate de que este módulo exista
-const ping = require('./funciones/ping'); // Asegúrate de que este módulo exista
-const fechas = require('./funciones/fechas'); // Asegúrate de que este módulo exista
-const cuandoParcial = require('./funciones/cuandoParcial'); // Asegúrate de que este módulo exista
-const goreJoke = require('./funciones/gore'); // Asegúrate de que este módulo exista
-const foroReply = require('./funciones/foroRespuestas.js')
 const fs = require('fs')
 const path = require('path')
 const config = require('./utils/config.js')
+
+// Importar comandos
+const modulos = loadModules('modulos')
+
+// Definir comandos
+Object.keys(modulos).forEach((comando) => {
+    commandMap[comando] = modulos[comando].func;
+});
+
 // Definir sendHelp antes de su uso
 const sendHelp = async (client, message) => {
     const helpMessage = `*Lista de comandos disponibles:*\n
@@ -24,18 +23,11 @@ const sendHelp = async (client, message) => {
 
 // Mapeo de comandos a funciones
 const commandMap = {
-    'examenes': checkExamInfo,
-    'noticias': checkNewsInfo,
-    'ping': ping,
-    'parciales': devolverCalendarioParciales,    'tomaso': tomaso,
-    'bedelia': getBedeliaInfo,
-    'bedelias': getBedeliaInfo,
-    'fechas': fechas,
-    'help': sendHelp,
-    'gore': goreJoke,
-    'cuando': cuandoParcial,
-    'foro' : foroReply
+    help: sendHelp,
+    ...modulos
 };
+
+
 // Para uso futuro
 function loadModules(modulos_dir){
     modulos = {}

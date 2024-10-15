@@ -1,12 +1,8 @@
 const fs = require('fs');
 const fuzzysort = require('fuzzysort');
-const { execSync } = require('child_process');
 
 // Enlace al PDF del calendario de parciales
 const calendarioURL = "https://www.fing.edu.uy/sites/default/files/2024-10/Calendario%202dos.%20Parciales%202do.%20Semestre%202024.pdf";
-
-// Ejecutar el comando para generar las fechas de parciales desde el PDF
-//execSync(`generarFechasParciales ${calendarioURL}`);
 
 // Leer el archivo generado que contiene las fechas en formato JSON
 const fechas = JSON.parse(fs.readFileSync('fechasParciales.json', 'utf-8'));
@@ -42,7 +38,7 @@ function díasHastaParcial(dateTime) {
  * @param {object} client
  * @param {object} message
  */
-async function cuandoParcial(client, message) {
+async function consultarParcial(client, message) {
     try {
         // Normalizar el comando si es un alias
         if (message.body === "!cuando cdiv") {
@@ -65,11 +61,7 @@ async function cuandoParcial(client, message) {
         });
 
         if (res.length === 0) {
-            try {
-                await message.reply(`No se encontró el curso ${curso}.`);
-            } catch (error) {
-                console.error("Error enviando la respuesta: ", error.message);
-            }
+            await message.reply(`No se encontró el curso ${curso}.`);
             return;
         }
 
@@ -78,21 +70,19 @@ async function cuandoParcial(client, message) {
         let dias_restantes = díasHastaParcial(fechas[res[0].target]);
 
         // Responder con la información del parcial
-        try {
-            await message.reply(`El parcial de ${res[0].target} es el ${fecha_legible} y faltan ${dias_restantes} días.`);
-        } catch (error) {
-            console.error("Error enviando la respuesta: ", error.message);
-        }
+        await message.reply(`El parcial de ${res[0].target} es el ${fecha_legible} y faltan ${dias_restantes} días.`);
     } catch (error) {
-        console.error("Error en cuandoParcial:", error.message);
-        try {
-            await message.reply("Ocurrió un error al procesar tu solicitud. Intenta nuevamente.");
-        } catch (error) {
-            console.error("Error enviando la respuesta de error: ", error.message);
-        }
+        console.error("Error en consultarParcial:", error.message);
+        await message.reply("Ocurrió un error al procesar tu solicitud. Intenta nuevamente.");
     }
 }
 
-
-
-module.exports = cuandoParcial;
+// Exporta la función con la estructura adecuada
+module.exports = [
+    {
+        name: 'consultarParcial',
+        func: consultarParcial,
+        info: 'Consulta la fecha de un parcial de un curso específico.',
+        args: ['<curso>'],
+    }
+];

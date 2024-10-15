@@ -1,8 +1,10 @@
+// calendarioExamenes.js
+
 const axios = require('axios');
 const cheerio = require('cheerio');
 
 // Función para comprobar la información de los exámenes
-async function checkExamInfo(client, message) {
+async function checkCalendarioExamenes(client, message, args) {
     try {
         await message.reply('Estoy buscando información sobre los exámenes...'); // Responde al usuario
 
@@ -44,4 +46,7 @@ async function checkExamInfo(client, message) {
     }
 }
 
-module.exports = checkExamInfo; // Exporta la función para comprobar la información de los exámenes
+// Exportar el comando en el formato adecuado
+module.exports = [
+    { name: 'calendarioExamenes', func: checkCalendarioExamenes, info: 'Obtiene información sobre el calendario de exámenes disponibles', args: [] }
+];

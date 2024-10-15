@@ -14,23 +14,28 @@ const jokes = [
     "¿Por qué los computadores nunca tienen hambre? Porque ya tienen bytes."
 ];
 
-// Función para enviar un chiste y luego un sticker
-const goreJoke = async (client, message) => {
-    let msg = "No puedo hacer eso, soy un bot serio. 🤖";
-    client.sendMessage(message.from, msg);
+// Función para enviar un chiste y un sticker
+const sendJokeAndSticker = async (client, message) => {
+    try {
+        let msg = "No puedo hacer eso, soy un bot serio. 🤖";
+        await client.sendMessage(message.from, msg);
 
-    const wait = 5000;
-    setTimeout(() => {
-        msg = "¡Pero puedo contarte un chiste! 😄";
-        client.sendMessage(message.from, msg);
-    }, wait);
+        const wait = 5000;
+        setTimeout(async () => {
+            msg = "¡Pero puedo contarte un chiste! 😄";
+            await client.sendMessage(message.from, msg);
+        }, wait);
 
-    setTimeout(() => {
-        const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
-        const emojiJoke = `😂😂 ¡Aquí tienes un chiste!  ${randomJoke} 😂😂`;
-        client.sendMessage(message.from, emojiJoke);
-        sendRandomSticker(client, message);
-    }, wait + 5000); // espera adicional para el chiste
+        setTimeout(async () => {
+            const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
+            const emojiJoke = `😂😂 ¡Aquí tienes un chiste!  ${randomJoke} 😂😂`;
+            await client.sendMessage(message.from, emojiJoke);
+            await sendRandomSticker(client, message);
+        }, wait + 5000); // espera adicional para el chiste
+    } catch (error) {
+        console.error("Error al enviar chiste y sticker:", error);
+        await client.sendMessage(message.from, "Ocurrió un error al intentar enviar el chiste.");
+    }
 };
 
 // Función para enviar un sticker aleatorio
@@ -53,4 +58,12 @@ const sendRandomSticker = async (client, message) => {
     await client.sendMessage(message.from, stickerMedia, { sendMediaAsSticker: true });
 };
 
-module.exports = goreJoke; // Exporta la función para enviar un chiste y un sticker
+// Exporta la función con la estructura adecuada
+module.exports = [
+    {
+        name: 'goreJoke',
+        func: sendJokeAndSticker,
+        info: 'Envía un chiste y un sticker',
+        args: [],
+    }
+];
