@@ -48,7 +48,7 @@ function listParameters(command){
 
 // Definir sendHelp antes de su uso
 const sendHelp = async (client, message, args) => {
-    if (args.length === 1) {
+    if (args && args.length === 1) {
         let command = args[0].toLowerCase();
         if (commandMap[command]) {
             command = commandMap[command];
@@ -133,7 +133,7 @@ client.on('message_create', async (message) => {
             return await message.reply(usage(commandObj));
         }
         // Llama a la función correspondiente
-        await commandMap[command].func(client, message);
+        await commandMap[command].func(client, message,args);
     } else {
         await client.sendMessage(message.from, `El comando "${command}" no es válido.`);
     }
