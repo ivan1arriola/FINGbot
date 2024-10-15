@@ -13,6 +13,7 @@ async function buscarEva(client, message, args) {
 
         // Realizar la búsqueda en Google
         const googleSearchUrl = `https://www.google.com/search?q=FING+EVA+${encodeURIComponent(curso)}`;
+        console.log(`Buscando en Google: ${googleSearchUrl}`);
         const response = await axios.get(googleSearchUrl);
         const $ = cheerio.load(response.data);
 
@@ -20,6 +21,7 @@ async function buscarEva(client, message, args) {
         let foundLink = null;
         $('a').each((index, element) => {
             const link = $(element).attr('href');
+            console.log(`Enlace encontrado: ${link}`);
             if (link && link.includes('eva.fing.edu.uy')) {
                 foundLink = link;
                 return false; // Salir del loop
@@ -27,7 +29,7 @@ async function buscarEva(client, message, args) {
         });
 
         if (foundLink) {
-            await message.reply(`Aquí tienes el enlace que encontré: ${foundLink}`);
+            await message.reply(foundLink);
         } else {
             await message.reply("No se encontraron enlaces relevantes para ese curso.");
         }
