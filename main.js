@@ -37,13 +37,22 @@ function usage(command){
    return `${config.PREFIJO}${command.name} ${command.args!==undefined?(command.args.map(cmd=>mapcmd(cmd)).join(' ')+' '):''}`
 }
 
+function listParameters(command){
+    function getarg(arg){
+        return `> ${arg.name} - ${arg.info}`
+    }
+    if(!command.args || command.args.length<1) return ""
+    let text=`Parametros:\n${command.args.map(arg=>getarg(arg)).join('\n')}`
+    return text;
+}
+
 // Definir sendHelp antes de su uso
 const sendHelp = async (client, message, args) => {
     if (args.length === 1) {
         let command = args[0].toLowerCase();
         if (commandMap[command]) {
             command = commandMap[command];
-            return await message.reply(`Ayuda: ${usage(command)} - ${command.info}`);
+            return await message.reply(`Ayuda: ${usage(command)} - ${command.info}\n${listParameters(command)}`);
         } else {
             return await message.reply(`Comando desconocido: ${command}`);
         }
