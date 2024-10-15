@@ -38,23 +38,25 @@ function usage(command){
 }
 
 // Definir sendHelp antes de su uso
-const sendHelp = async (client, message,args) => {
-    if (args.length==1){
+const sendHelp = async (client, message, args) => {
+    if (args.length === 1) {
         let command = args[0].toLowerCase();
-        if(commandMap[command]){
-            command=commandMap[command];
-            return await message.reply(`Ayuda: ${usage(command)}- ${command.info}`)
-        }else{
-           return await message.reply(`Comando desconocido: ${command}`)
+        if (commandMap[command]) {
+            command = commandMap[command];
+            return await message.reply(`Ayuda: ${usage(command)} - ${command.info}`);
+        } else {
+            return await message.reply(`Comando desconocido: ${command}`);
         }
     }
-    const helpMessage = `*Lista de comandos disponibles:*\n
-    ${Object.keys(commandMap).map((comando, indice) => `${indice + 1}. ${usage(commandMap[comando]}`).join('\n')}\n
-    Simbolos: <> - requerido, [] - opcional`;
+
+    const helpMessage = `*Lista de comandos disponibles:*\n` +
+        `${Object.keys(commandMap).map((comando, indice) => `${indice + 1}. ${usage(commandMap[comando])} - ${commandMap[comando].info}`).join('\n')}\n` +
+        `Símbolos: <> - requerido, [] - opcional`;
 
     // Enviar el mensaje de ayuda
     await client.sendMessage(message.from, helpMessage);
 };
+
 
 // Agregar el comando de ayuda al mapeo
 commandMap['help'] = {
