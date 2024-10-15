@@ -4,31 +4,8 @@ const fs = require('fs')
 const path = require('path')
 const config = require('./utils/config.js')
 
-// Importar comandos
-const modulos = loadModules('modulos')
 
-// Definir comandos
-Object.keys(modulos).forEach((comando) => {
-    commandMap[comando] = modulos[comando].func;
-});
-
-// Definir sendHelp antes de su uso
-const sendHelp = async (client, message) => {
-    const helpMessage = `*Lista de comandos disponibles:*\n
-    ${Object.keys(commandMap).map((comando, indice) => `${indice + 1}. ${config.PREFIJO}${comando}`).join('\n')}`;
-
-    // Enviar el mensaje de ayuda
-    await client.sendMessage(message.from, helpMessage);
-};
-
-// Mapeo de comandos a funciones
-const commandMap = {
-    help: sendHelp,
-    ...modulos
-};
-
-
-// Para uso futuro
+// Cargar módulos
 function loadModules(modulos_dir){
     modulos = {}
     try{
@@ -51,6 +28,33 @@ function loadModules(modulos_dir){
         return modulos;
     }
 }
+
+const commandMap = loadModules('modulos')
+
+
+
+
+// Definir sendHelp antes de su uso
+const sendHelp = async (client, message) => {
+    const helpMessage = `*Lista de comandos disponibles:*\n
+    ${Object.keys(commandMap).map((comando, indice) => `${indice + 1}. ${config.PREFIJO}${comando}`).join('\n')}`;
+
+    // Enviar el mensaje de ayuda
+    await client.sendMessage(message.from, helpMessage);
+};
+
+// Agregar el comando de ayuda al mapeo
+commandMap['ayuda'] = {
+    name: 'ayuda',
+    func: sendHelp,
+    info: 'Muestra la lista de comandos disponibles',
+    args: []
+};
+
+console.log('Comandos cargados:', Object.keys(commandMap).join(', '));
+
+
+
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
