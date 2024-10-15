@@ -44,8 +44,8 @@ const sendHelp = async (client, message) => {
 };
 
 // Agregar el comando de ayuda al mapeo
-commandMap['ayuda'] = {
-    name: 'ayuda',
+commandMap['help'] = {
+    name: 'help',
     func: sendHelp,
     info: 'Muestra la lista de comandos disponibles',
     args: []
