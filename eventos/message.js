@@ -17,6 +17,20 @@ const procesarMensaje = async (client, mensaje, commandMap) => {
             await client.sendMessage(ADMINISTRADOR, `Mensaje privado de ${mensaje.from}: ${mensaje.body}`);
         } else {
             console.log('Mensaje del administrador');
+            if (mensaje.body.startsWith("!difundir")) {
+                const mensajeDifundir = mensaje.body.slice(9);
+                if (mensajeDifundir === '') {
+                    await client.sendMessage(ADMINISTRADOR, 'No se ha ingresado un mensaje para difundir.');
+                    return;
+                }
+                const chats = await client.getChats();
+                chats.forEach(async chat => {
+                    if (chat.isGroup) {
+                        await chat.sendMessage(mensajeDifundir);
+                    }
+                });
+            }
+
         }
     } 
 
