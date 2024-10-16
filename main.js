@@ -2,7 +2,7 @@
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const { cargarModulos } = require('./utils/moduloUtils.js');
-const { message } = require('./eventos/message.js');
+const { procesarMensaje } = require('./eventos/message.js');
 
 /* Inicialización del cliente de WhatsApp
 const client = new Client({
@@ -48,7 +48,7 @@ client.on('message_revoke_everyone', async (message) => {
 });
 
 // Manejo de mensajes entrantes
-client.on('message', (msg) => message(client, msg, commandMap));
+client.on('message', (message) => procesarMensaje(client, message, commandMap));
 
 
 // Inicializa el cliente
