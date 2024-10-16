@@ -7,7 +7,7 @@ const sendRandomSticker = require('../utils/sendRandomSticker');
 const stickersDir = path.join(__dirname, '../stickers');
 
 // Cargar chistes desde el archivo JSON
-const jokesPath = path.join(__dirname, '../chistes.json');
+const jokesPath = path.join(__dirname, '../datos/chistes.json');
 const jokes = JSON.parse(fs.readFileSync(jokesPath, 'utf-8'));
 
 // Función para enviar un chiste y un sticker

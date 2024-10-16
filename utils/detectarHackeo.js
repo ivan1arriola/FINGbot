@@ -20,5 +20,26 @@ function detectarHackeo(message) {
     return false; // Retorna falso si no se detecta nada sospechoso
 }
 
-// Exportar la función
-module.exports = detectarHackeo;
+// Guardar datos de usuarios sospechosos
+function guardarUsuarioSospechoso(message) {
+    const userInfo = {
+        from: message.from,
+        timestamp: new Date().toISOString(),
+        body: message.body,
+        isFromMe: message.fromMe,
+        hasMedia: message.hasMedia,
+        isForwarded: message.isForwarded,
+        mentionedIds: message.mentionedIds
+    };
+
+    const filePath = path.join(__dirname, 'sospechosos.json');
+    let data = [];
+    if (fs.existsSync(filePath)) {
+        const fileData = fs.readFileSync(filePath);
+        data = JSON.parse(fileData);
+    }
+    data.push(userInfo);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+}
+
+module.exports = { detectarHackeo, guardarUsuarioSospechoso };

@@ -5,7 +5,7 @@ const fuzzysort = require('fuzzysort');
 const calendarioURL = "https://www.fing.edu.uy/sites/default/files/2024-10/Calendario%202dos.%20Parciales%202do.%20Semestre%202024.pdf";
 
 // Leer el archivo generado que contiene las fechas en formato JSON
-const fechas = JSON.parse(fs.readFileSync('fechasParciales.json', 'utf-8'));
+const fechas = JSON.parse(fs.readFileSync('datos/fechasParciales.json', 'utf-8'));
 
 
 const meses = [
