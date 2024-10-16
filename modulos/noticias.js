@@ -34,11 +34,22 @@ async function fetchNews(url) {
     }
 }
 
+function obtenerArgumentos(body) {
+    return body.trim().split(" ").slice(1).filter(text => text !== '');
+}
+
+
 // Función para comprobar la información de las noticias y enviar los resultados
 async function checkNewsInfo(client, msg, args) {
     try {
+        // Supongamos que `args` se obtiene de la función que procesa el comando
+        const args = obtenerArgumentos(msg.body); // Asegúrate de que esta función esté correctamente definida
+
         // Asegúrate de que args tenga al menos un elemento y que sea un número válido
-        const cantidad = (args && args.length > 0 && !isNaN(args[0])) ? Math.min(parseInt(args[0]), 4) : 1; // Cantidad de noticias (máx 4, por defecto 1)
+        const cantidad = (args.length > 0 && !isNaN(args[0]) && args[0] !== '') 
+            ? Math.min(parseInt(args[0]), 4) 
+            : 1; // Cantidad de noticias (máx 4, por defecto 1)
+
         console.log(`Obteniendo las últimas ${cantidad} noticias...`);
 
         // Intenta obtener noticias de la página

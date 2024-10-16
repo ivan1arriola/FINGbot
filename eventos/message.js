@@ -3,9 +3,9 @@ const config = require('../config');
 const { detectarHackeo, guardarUsuarioSospechoso } = require('../utils/detectarHackeo');
 
 
-const message = async (mensaje) => {
+const message = async (client, mensaje, commandMap) => {
     
-    console.log('Mensaje recibido: "', message.body, '" de ', message.from);
+    console.log('Mensaje recibido: "', mensaje.body, '" de ', mensaje.from);
 
     const chat = await mensaje.getChat();
 

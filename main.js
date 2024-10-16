@@ -48,7 +48,7 @@ client.on('message_revoke_everyone', async (message) => {
 });
 
 // Manejo de mensajes entrantes
-client.on('message', message);
+client.on('message', (msg) => message(client, msg, commandMap));
 
 
 // Inicializa el cliente
