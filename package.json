@@ -10,7 +10,8 @@
     "logs": "screen -r fingbot || echo 'No se está ejecutando el bot.'",
     "dev": "nodemon main.js",
     "clean all": "rm -rf node_modules && rm -rf package-lock.json .wwebjs* && npm install",
-    "clean": "rm -rf .wwebjs*"
+    "clean": "rm -rf .wwebjs*",
+    "restart": "npm run stop && npm run start"
   },
   "repository": {
     "type": "git",
