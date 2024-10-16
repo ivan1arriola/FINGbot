@@ -15,25 +15,48 @@ const client = new Client({
 });
 */
 
-const client = new Client({
+/*const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
         product: 'chrome',
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--headless'],
     }
+});*/
+const client = new Client({
+    authStrategy: new LocalAuth(),
+    puppeter:{
+        browser:'firefox'
+    }
 });
-
 
 // Cargar módulos 
 const commandMap = cargarModulos('modulos');
 console.log('Comandos cargados:\n' + Object.keys(commandMap).join('\n')); 
-
-
-// Muestra el código QR en la terminal
-client.on('qr', (qr) => {
-    console.log('QR recibido: ');
-    qrcode.generate(qr, { small: true });
+//Cargar las variables de entorno
+require('dotenv').config()                                             
+//Carga el numero desde el argumento o desde variable de entorno       
+let number=process.argv[1]||process.env.number                         
+const rl = require('readline').createInterface({input:process.stdin,output:process.stdout})                                                   
+//Funcion para preguntar de manera asincronica
+const question = (text) => new Promise(resolve=>rl.question(text,resolve));                                                                   
+//Booleano para no volver a pedir
+let pairingCodeRequested = false;                                      
+client.on('qr', async (qr) => {                                            
+    if ((process.env.useCode||process.args[2])&& !pairingCodeRequested) {                         
+        if(!number){                                                                   
+            console.warn("Considera incluir tu numero en el archivo .env")                                                                                
+            number=await question("Numero: ")
+        }                                                                                                                                             
+        const pairingCode = await client.requestPairingCode(number);
+        console.log(`Codigo para ${number}: ${pairingCode}`)
+        pairingCodeRequested = true;                                       
+    }else{
+        //Mostrar el codigo QR
+        console.log('QR recibido: ');
+        qrcode.generate(qr, { small: true });
+    }
 });
+
 
 // Indica que el cliente está listo
 client.on('ready', async () => {
