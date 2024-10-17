@@ -12,22 +12,33 @@ dotenv.config();
 const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: {
-        product: 'firefox',
+        product: 'chrome',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
-            '--headless', // Asegúrate de que el modo headless esté activo
-            '--remote-debugging-port=9222', // Puedes agregar esto para depuración remota
+            '--headless'
         ],
     },
 });
 
 client.initialize();
+ 
+ 
+ /*
+
+process.on('SIGINT', async () => {
+    await client.destroy();
+    process.exit(0);
+});
+ */
 
 
 // Cargar módulos
 const commandMap = cargarModulos('modulos');
 console.log('Comandos cargados:\n' + Object.keys(commandMap).join('\n'));
+
+
+/*
 
 // Cargar el número desde el argumento o desde variable de entorno
 let number = process.argv[2] || process.env.NUMBER;
@@ -44,7 +55,7 @@ const question = (text) => new Promise(resolve => rl.question(text, resolve));
 // Booleano para no volver a pedir el código de emparejamiento
 let pairingCodeRequested = false;
 
-// Evento para mostrar el código QR o solicitar código de emparejamiento
+/*Evento para mostrar el código QR o solicitar código de emparejamiento
 client.on('qr', async (qr) => {
     if ((process.env.USE_CODE || process.argv[3]) && !pairingCodeRequested) {
         if (!number) {
@@ -56,6 +67,13 @@ client.on('qr', async (qr) => {
         pairingCodeRequested = true;
     } else {
         // Mostrar el código QR
+        console.log('QR recibido: ');
+        qrcode.generate(qr, { small: true });
+    }
+}); */
+
+client.on('qr', async (qr) => {
+    if (!pairingCodeRequested) {
         console.log('QR recibido: ');
         qrcode.generate(qr, { small: true });
     }

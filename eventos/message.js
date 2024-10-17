@@ -15,6 +15,7 @@ const procesarMensaje = async (client, mensaje, commandMap) => {
         console.log ('Mensaje privado de ' + mensaje.from + ' : ' + mensaje.body);
         if (mensaje.from !== ADMINISTRADOR) {
             await client.sendMessage(ADMINISTRADOR, `Mensaje privado de ${mensaje.from}: ${mensaje.body}`);
+            procesarComando(client, mensaje, commandMap);
         } else {
             console.log('Mensaje del administrador');
             if (mensaje.body.startsWith("!difundir")) {
