@@ -1,4 +1,5 @@
 const WAWebJS = require('whatsapp-web.js');
+const config =  require('../config');
 
 /**
  * Función para realizar la tirada de dados en base a la expresión.
@@ -21,6 +22,15 @@ function calcularTirada(expression) {
     // Verificar si la cantidad de caras en el dado es válida
     if (carasDados <= 0) {
         return "⚠️ El número de caras del dado debe ser mayor que 0.";
+    }
+
+    // Limitar la cantidad de dados y caras desde la configuración
+    if (cantidadDados > config.MAX_DADOS) {
+        return `⚠️ No se pueden lanzar más de ${config.MAX_DADOS} dados.`;
+    }
+
+    if (carasDados > config.MAX_CARAS) {
+        return `⚠️ No se pueden usar dados con más de ${config.MAX_CARAS} caras.`;
     }
 
     // Realizar la tirada

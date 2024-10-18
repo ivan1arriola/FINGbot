@@ -4,10 +4,7 @@ async function ping(client, message, args) {
     try {
         const userId = message.from;
         const currentTime = new Date();
-        const formattedTime = `${String(currentTime.getHours()).padStart(2, '0')}:${String(currentTime.getMinutes()).padStart(2, '0')}`;
-        
-        console.log(`${userId} - ${formattedTime} - Respondiendo a ping...`);
-        
+        const formattedTime = `${String(currentTime.getHours()).padStart(2, '0')}:${String(currentTime.getMinutes()).padStart(2, '0')}`;        
         // Intentar responder al mensaje
         await message.reply('pong 🏓');
     } catch (error) {
