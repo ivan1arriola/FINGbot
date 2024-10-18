@@ -1,6 +1,4 @@
 // manejoChatsPrivados.js
-const config = require('../config'); // Asegúrate de tener acceso a la configuración
-
 const TIEMPO_CHAT_INACTIVO = 5 * 60 * 1000; // 5 minutos
 const MENSAJE_BIENVENIDA = '¡Hola! Soy un bot creado por estudiantes de la FING para ayudarte con información sobre cursos y otras cosas. Si necesitas ayuda, escribe !help.';
 

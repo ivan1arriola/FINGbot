@@ -5,7 +5,7 @@ const { obtenerComando } = require('../utils/procesarComando');
 
 const difundirMensaje = async (client, message) => {
     const command = obtenerComando(message.body);
-    const mensaje = message.body.slice(config.COMANDO_PREFIJO.length + command.length).trim();
+    const mensaje = message.body.slice(config.PREFIJO.length + command.length).trim();
 
     // Advertir por consola que se llamo al comando de difusion con muchos emojis
     console.log('📢 Difundir mensaje: ' + mensaje );
