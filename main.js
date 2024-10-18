@@ -4,7 +4,6 @@ const qrcode = require('qrcode-terminal');
 const { cargarModulos } = require('./utils/moduloUtils.js');
 const { procesarMensaje } = require('./eventos/message.js');
 const dotenv = require('dotenv');
-const readline = require('readline');
 
 // Cargar variables de entorno
 dotenv.config();
@@ -22,67 +21,20 @@ const client = new Client({
 });
 
 client.initialize();
- 
- 
- /*
-
-process.on('SIGINT', async () => {
-    await client.destroy();
-    process.exit(0);
-});
- */
-
 
 // Cargar módulos
 const commandMap = cargarModulos('modulos');
 console.log('Comandos cargados:\n' + Object.keys(commandMap).join('\n'));
 
-
-/*
-
-// Cargar el número desde el argumento o desde variable de entorno
-let number = process.argv[2] || process.env.NUMBER;
-
-// Crear interfaz para leer desde la consola
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-// Función para preguntar de manera asincrónica
-const question = (text) => new Promise(resolve => rl.question(text, resolve));
-
-// Booleano para no volver a pedir el código de emparejamiento
-let pairingCodeRequested = false;
-
-/*Evento para mostrar el código QR o solicitar código de emparejamiento
+// Evento para mostrar el código QR
 client.on('qr', async (qr) => {
-    if ((process.env.USE_CODE || process.argv[3]) && !pairingCodeRequested) {
-        if (!number) {
-            console.warn("Considera incluir tu número en el archivo .env");
-            number = await question("Número: ");
-        }
-        const pairingCode = await client.requestPairingCode(number);
-        console.log(`Código para ${number}: ${pairingCode}`);
-        pairingCodeRequested = true;
-    } else {
-        // Mostrar el código QR
-        console.log('QR recibido: ');
-        qrcode.generate(qr, { small: true });
-    }
-}); */
-
-client.on('qr', async (qr) => {
-    if (!pairingCodeRequested) {
-        console.log('QR recibido: ');
-        qrcode.generate(qr, { small: true });
-    }
+    console.log('QR recibido: ');
+    qrcode.generate(qr, { small: true });
 });
 
 // Evento cuando el cliente está listo
 client.on('ready', () => {
     console.log('¡Cliente está listo! 🚀');
-    rl.close(); // Cerrar la interfaz de readline una vez que el cliente esté listo
 });
 
 // Evento para mensajes eliminados por todos
@@ -93,10 +45,6 @@ client.on('message_revoke_everyone', async (message) => {
 
 // Manejo de mensajes entrantes
 client.on('message', (message) => procesarMensaje(client, message, commandMap));
-
-// Inicializar el cliente
-client.initialize();
-
 
 // Eventos de autenticación
 client.on('authenticated', () => {

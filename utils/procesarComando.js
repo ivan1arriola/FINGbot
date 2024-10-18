@@ -3,47 +3,48 @@ const { usage } = require('./moduloUtils');
 
 // Función para verificar si un comando es válido
 const esComandoValido = (command, commandMap) => {
-    return command in commandMap && typeof commandMap[command].func === 'function';
+    return commandMap.hasOwnProperty(command) && typeof commandMap[command].func === 'function';
 };
-
 
 // Funciones auxiliares
 function parseCommand(input) {
-    const regex = /(?:[^\s"]+|"[^"]*")+/g; // Detecta argumentos con espacios, los argumentos entre "" swran tratados como uno solo
-    const parts = input.match(regex).map(part => part.replace(/"/g, ''));
-    const comando = parts.shift().toLowerCase();
-    const args = parts;
-    return [
-        comando,
-        args
-    ];
+    const regex = /(?:[^\s"]+|"[^"]*")+/g;
+    return input.match(regex).map(part => part.replace(/"/g, ''));
 }
 
 // Función para procesar el comando
 const procesarComando = async (client, message, commandMap) => {
-    const [command,args] = parseCommand(message.body.trim().slice(config.PREFIJO.length));
+    const commandText = message.body.trim().slice(config.PREFIJO.length);
+    const parts = parseCommand(commandText);
     
-    // Verificar si el comando es válido usando la nueva función
-    if (esComandoValido(command, commandMap)) {
-        // Imprimir por consola el comando válido con colores usando secuencias de escape ANSI
-        console.log(`\x1b[32m✔ Se detectó comando válido: \x1b[34m[${command}]\x1b[0m`);
+    if (!parts.length) return;
 
-        const commandObj = commandMap[command];
-        
-        // Verificar el mínimo de argumentos
-        if (args.length < commandObj.min_args) {
-            return await message.reply(usage(commandObj));
-        }
+    const command = parts[0].toLowerCase();
+    const args = parts.slice(1);
 
-        // Si el comando es 'help', pasar `commandMap` como argumento adicional
-        if (command === 'help') {
-            await commandObj.func(client, message, args, commandMap);
-        } else {
-            await commandObj.func(client, message, args);
-        }
+    // Verificar si el comando es válido antes de hacer cualquier otra cosa
+    if (!esComandoValido(command, commandMap)) {
+        return await client.sendMessage(message.from, `El comando "${command}" no es válido.`);
+    }
+
+    const commandObj = commandMap[command];
+ 
+    // Verificar el mínimo de argumentos antes de llamar cualquier función
+    if (args.length < commandObj.min_args) {
+        return await message.reply(usage(commandObj));
+    }
+
+    // Procesar el comando (evitar logs innecesarios en producción)
+    if (command === 'help') {
+        await commandObj.func(client, message, args, commandMap);
     } else {
-        await client.sendMessage(message.from, `El comando "${command}" no es válido.`);
+        await commandObj.func(client, message, args);
     }
 };
 
-module.exports = { procesarComando };
+// Función para obtener el comando del mensaje
+function obtenerComando(body) {
+    return body.trim().toLowerCase().slice(config.PREFIJO.length).split(" ")[0];
+}
+
+module.exports = { procesarComando, obtenerComando };

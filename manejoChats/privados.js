@@ -21,10 +21,7 @@ async function manejarMensajesPrivados(client, message, commandMap) {
     }
 }
 
-// Función para obtener el comando del mensaje
-function obtenerComando(body) {
-    return body.trim().toLowerCase().slice(config.PREFIJO.length).split(" ")[0];
-}
+
 
 // Verificar si el comando es válido
 function esComandoValido(command, commandMap) {
