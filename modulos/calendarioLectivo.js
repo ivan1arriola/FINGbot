@@ -1,9 +1,14 @@
-// calendarioLectivo.js
-
 const moment = require('moment'); // Asegúrate de tener moment.js instalado
 
 const sendCalendarioLectivo = async (client, message, args) => {
     const now = moment(); // Fecha actual
+
+    // Verificar si todos los eventos ya han pasado
+    const ultimoExamenFin = moment('2024-12-21');
+    if (now.isAfter(ultimoExamenFin)) {
+        await client.sendMessage(message.from, '🎉 ¡Feliz año nuevo 2025! 🎉');
+        return; // Finalizar aquí si ya pasó todo
+    }
 
     // Definición de las fechas
     const fechas = {
@@ -12,12 +17,12 @@ const sendCalendarioLectivo = async (client, message, args) => {
             segundoSemestre: { inicio: moment('2024-08-05'), fin: moment('2024-12-03') },
         },
         parciales: [
-            { inicio: moment('2024-04-27'), fin: moment('2024-05-08'), descripcion: 'Primer Parcial 1' },
-            { inicio: moment('2024-05-11'), fin: moment('2024-05-11'), descripcion: 'Primer Parcial 2' },
-            { inicio: moment('2024-07-04'), fin: moment('2024-07-15'), descripcion: 'Primer Parcial 3' },
-            { inicio: moment('2024-09-21'), fin: moment('2024-10-01'), descripcion: 'Segundo Parcial 1' },
-            { inicio: moment('2024-10-05'), fin: moment('2024-10-05'), descripcion: 'Segundo Parcial 2' },
-            { inicio: moment('2024-11-22'), fin: moment('2024-12-03'), descripcion: 'Segundo Parcial 3' }
+            { inicio: moment('2024-04-27'), fin: moment('2024-05-08'), descripcion: 'Parcial 1 (1er Semestre)' },
+            { inicio: moment('2024-05-11'), fin: moment('2024-05-11'), descripcion: 'Parcial 2 (1er Semestre)' },
+            { inicio: moment('2024-07-04'), fin: moment('2024-07-15'), descripcion: 'Parcial 3 (1er Semestre)' },
+            { inicio: moment('2024-09-21'), fin: moment('2024-10-01'), descripcion: 'Parcial 1 (2do Semestre)' },
+            { inicio: moment('2024-10-05'), fin: moment('2024-10-05'), descripcion: 'Parcial 2 (2do Semestre)' },
+            { inicio: moment('2024-11-22'), fin: moment('2024-12-03'), descripcion: 'Parcial 3 (2do Semestre)' }
         ],
         examenes: [
             { inicio: moment('2024-01-29'), fin: moment('2024-03-02'), descripcion: 'Exámenes Febrero' },
@@ -26,32 +31,38 @@ const sendCalendarioLectivo = async (client, message, args) => {
         ]
     };
 
-    // Determinar el semestre actual
-    let semestreActual;
-    if (now.isBetween(fechas.cursos.primerSemestre.inicio, fechas.cursos.primerSemestre.fin)) {
-        semestreActual = 'Primer Semestre';
-    } else if (now.isBetween(fechas.cursos.segundoSemestre.inicio, fechas.cursos.segundoSemestre.fin)) {
-        semestreActual = 'Segundo Semestre';
-    } else {
-        semestreActual = 'Fuera del período académico';
-    }
+    
 
-    // Calcular semanas restantes para parciales y exámenes
-    const proximosParciales = fechas.parciales.filter(p => p.inicio.isAfter(now)).sort((a, b) => a.inicio - b.inicio);
-    const proximosExamenes = fechas.examenes.filter(e => e.inicio.isAfter(now)).sort((a, b) => a.inicio - b.inicio);
-
-    const semanasParaParciales = proximosParciales.length > 0 ? proximosParciales[0].inicio.diff(now, 'weeks') : null;
-    const semanasParaExamenes = proximosExamenes.length > 0 ? proximosExamenes[0].inicio.diff(now, 'weeks') : null;
+    // Filtrar fechas pasadas
+    const parcialesFuturos = fechas.parciales.filter(p => p.fin.isAfter(now));
+    const examenesFuturos = fechas.examenes.filter(e => e.fin.isAfter(now));
 
     // Construir el mensaje
-    let mensaje = `**${semestreActual}**\n`;
-    if (semanasParaParciales !== null) {
-        mensaje += `Faltan ${semanasParaParciales} semanas para el próximo período de parciales.\n`;
+    let mensaje = `📅 *Calendario Lectivo 2024*\n\n`;
+
+    // Agregar fechas de cursos
+    mensaje += `🔹 *Cursos*\n`;
+    if (fechas.cursos.primerSemestre.fin.isAfter(now)) {
+        mensaje += `- Primer Semestre: 04.03.2024 - 15.07.2024\n`;
     }
-    if (semanasParaExamenes !== null) {
-        mensaje += `Faltan ${semanasParaExamenes} semanas para el próximo período de exámenes.`;
-    } else {
-        mensaje += `No hay próximos exámenes programados.`;
+    if (fechas.cursos.segundoSemestre.fin.isAfter(now)) {
+        mensaje += `- Segundo Semestre: 05.08.2024 - 03.12.2024\n`;
+    }
+
+    // Agregar fechas de parciales
+    if (parcialesFuturos.length > 0) {
+        mensaje += `\n🔹 *Parciales*\n`;
+        parcialesFuturos.forEach(parcial => {
+            mensaje += `- ${parcial.descripcion}: ${parcial.inicio.format('DD.MM.YYYY')} - ${parcial.fin.format('DD.MM.YYYY')}\n`;
+        });
+    }
+
+    // Agregar fechas de exámenes
+    if (examenesFuturos.length > 0) {
+        mensaje += `\n🔹 *Exámenes*\n`;
+        examenesFuturos.forEach(examen => {
+            mensaje += `- ${examen.descripcion}: ${examen.inicio.format('DD.MM.YYYY')} - ${examen.fin.format('DD.MM.YYYY')}\n`;
+        });
     }
 
     // Enviar el mensaje
