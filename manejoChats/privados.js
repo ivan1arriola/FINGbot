@@ -1,6 +1,10 @@
 // manejoChatsPrivados.js
-const TIEMPO_CHAT_INACTIVO = 5 * 60 * 1000; // 5 minutos
-const MENSAJE_BIENVENIDA = '¡Hola! Soy un bot creado por estudiantes de la FING para ayudarte con información sobre cursos y otras cosas. Si necesitas ayuda, escribe !help.';
+const config = require('../config');
+const { difundirMensaje } = require('../manejoChats/difusion');
+
+const TIEMPO_CHAT_INACTIVO = config.TIEMPO_CHAT_INACTIVO;
+const MENSAJE_BIENVENIDA = config.MENSAJE_BIENVENIDA;
+const ADMINISTRADOR = config.ADMINISTRADOR
 
 // Función para iniciar chat
 async function iniciarChat(chat) {
@@ -11,6 +15,19 @@ async function iniciarChat(chat) {
 async function manejarMensajesPrivados(client, message, commandMap) {
     const chat = await message.getChat();
     const command = obtenerComando(message.body);
+
+    if (message.fromMe) {
+        return;
+    }
+
+    if (message.body.startsWith(config.PREFIJO_ADMIN)) {
+        if (message.from === ADMINISTRADOR) {
+            if (message.body === config.PREFIJO_ADMIN + 'difundir') {
+                await difundirMensaje(client, message);
+            }
+        }
+        return;
+    }
 
     if (esComandoValido(command, commandMap)) {
         await procesarComando(client, message, commandMap);
