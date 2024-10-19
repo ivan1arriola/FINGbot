@@ -86,7 +86,7 @@ async function tryGuess(client,message,args){
        let chatid=message.from
    }
    let cid=chats[chatid]
-   let autor=message.autor
+   let autor=message.author
    if(!cid) return await message.reply('No hay ninguna partida en curso')
    if(cid.winner) return await message.reply(`Ya han ganado`)
 
