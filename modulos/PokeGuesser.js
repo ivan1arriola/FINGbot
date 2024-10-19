@@ -38,16 +38,24 @@ function question(text){
 }
 async function stopGame(client,message){
     await message.reply('Juego terminado')
-    let chat = await message.getChat()
-    let chatid=chat.id._serialized
+    if(message.fromMe){
+       let chat=await message.getChat()
+       let chatid=chat.id._serialized?chat.id._serialized:chat.id
+    }else{
+       let chatid=message.from
+    }
     if(chats[chatid]){
         delete chats[chat.id._serialized]
     }
 }
 async function createGame(client,message,args){
 
-    let chat=await message.getChat()
-    let chatid=chat.id._serialized
+    if(message.fromMe){
+       let chat=await message.getChat()
+       let chatid=chat.id._serialized?chat.id._serialized:chat.id
+    }else{
+       let chatid=message.from
+    }
     if(chatid in chats && chats[chatid].winner=='') return await message.reply('Ya hay un juego en curso') 
     let pokemon_count=(await axios.get('https://pokeapi.co/api/v2/pokemon?limit=1')).data.count
     let pokemon_picked=randInt(pokemon_count)
@@ -71,8 +79,12 @@ async function createGame(client,message,args){
     await message.reply(msg,null,{media:media})
 }
 async function tryGuess(client,message,args){
-   let chat=await message.getChat()
-   let chatid=chat.id._serialized
+   if(message.fromMe){
+       let chat=await message.getChat()
+       let chatid=chat.id._serialized?chat.id._serialized:chat.id
+   }else{
+       let chatid=message.from
+   }
    let cid=chats[chatid]
    if(!cid) return await message.reply('No hay ninguna partida en curso')
    if(cid.winner) return await message.reply(`Ya han ganado`)
@@ -88,7 +100,7 @@ async function tryGuess(client,message,args){
            inventory[message.author.id]=store
 
        }
-       cid.winner=message.author.id
+       cid.winner=message.author
        await save()
        await message.reply('Has adivinado el Pokemon')
 
@@ -97,7 +109,7 @@ async function tryGuess(client,message,args){
    }
 }
 async function getPokemonList(client,message){
-    let author=message.author.id
+    let author=message.author
     if(!inventory[author]) return await message.reply('No tienes pokemones cazados')
     let pokemones=Object.keys(inventory[author].pokemones).map(pokemonName=>`${pokemonName} (x${inventory[author].pokemones[pokemonName]})`).join('\n')
     return await message.reply(`Pokemones:\n${pokemones}`)
