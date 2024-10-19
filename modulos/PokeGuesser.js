@@ -23,8 +23,8 @@ let template={
 let inventory_player={
     pokemons:[]
 }
-function save(){
-    fs.writeFileSync('pokemons.json',JSON.stringify(inventory))
+async function save(){
+    fsAsync.writeFile('pokemons.json',JSON.stringify(inventory))
 }
 function randInt(max){
     return Math.floor(Math.random()*max)
@@ -85,8 +85,8 @@ async function tryGuess(client,message,args){
            inventory[message.author.id]=store
 
        }
-       cid.winner=message.author.id
-       save()
+       cid.winner=message.author
+       await save()
        await message.reply('Has adivinado el Pokemon')
 
    }else{
@@ -94,7 +94,7 @@ async function tryGuess(client,message,args){
    }
 }
 async function getPokemonList(client,message){
-    let author=message.author.id
+    let author=message.author
     if(!inventory[author]) return await message.reply('No tienes pokemones cazados')
     let pokemones=Object.keys(inventory[author].pokemones).map(pokemonName=>`${pokemonName} (x${inventory[author].pokemones[pokemonName]})`).join('\n')
     return await message.reply(`Pokemones:\n${pokemones}`)
