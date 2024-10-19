@@ -39,14 +39,16 @@ function question(text){
 async function stopGame(client,message){
     await message.reply('Juego terminado')
     let chat = await message.getChat()
-    if(chats[chat.id]){
-        delete chats[chat.id]
+    let chatid=chat.id._serialized
+    if(chats[chatid]){
+        delete chats[chat.id._serialized]
     }
 }
 async function createGame(client,message,args){
 
     let chat=await message.getChat()
-    if(chat.id in chats && chats[chat.id].winner=='') return await message.reply('Ya hay un juego en curso') 
+    let chatid=chat.id._serialized
+    if(chatid in chats && chats[chatid].winner=='') return await message.reply('Ya hay un juego en curso') 
     let pokemon_count=(await axios.get('https://pokeapi.co/api/v2/pokemon?limit=1')).data.count
     let pokemon_picked=randInt(pokemon_count)
     let resp=await axios.get(`https://pokeapi.co/api/v2/pokemon?offset=${pokemon_picked}`)
@@ -59,18 +61,19 @@ async function createGame(client,message,args){
     pokemon_name.split('-').forEach(a=>alias.push(a))
     pokemon_name.split(' ').forEach(a=>alias.push(a))
     alias.push(pokemon_name.replace('-',' '))
-    chats[chat.id]=template
-    chats[chat.id].alias=alias
-    chats[chat.id].name=pokemon_name
-    chats[chat.id].winner=''
-    chats[chat.id].ev=setTimeout(stopGame,1000*300,client,message)
+    chats[chatid]=template
+    chats[chatid].alias=alias
+    chats[chatid].name=pokemon_name
+    chats[chatid].winner=''
+    chats[chatid].ev=setTimeout(stopGame,1000*300,client,message)
     let media=await  MessageMedia.fromUrl(pokemon_image)
     const msg=`Adivina el pokemon con !guess <nombre>`
     await message.reply(msg,null,{media:media})
 }
 async function tryGuess(client,message,args){
    let chat=await message.getChat()
-   let cid=chats[chat.id]
+   let chatid=chat.id._serialized
+   let cid=chats[chatid]
    if(!cid) return await message.reply('No hay ninguna partida en curso')
    if(cid.winner) return await message.reply(`Ya han ganado`)
 
@@ -79,13 +82,13 @@ async function tryGuess(client,message,args){
    if(cid.alias.some(alias=>alias==r)){
        if(cid.ev){
            clearTimeout(cid.ev);
-           chats[chat.id].ev=null;
+           chats[chatid].ev=null;
            let store={pokemones:inventory[message.author.id]?inventory[message.author.id].pokemones:{}}
            store.pokemones[cid.name]=store.pokemones[cid.name]?store.pokemones[cid.name]+1:1
            inventory[message.author.id]=store
 
        }
-       cid.winner=message.author
+       cid.winner=message.author.id
        await save()
        await message.reply('Has adivinado el Pokemon')
 
@@ -94,7 +97,7 @@ async function tryGuess(client,message,args){
    }
 }
 async function getPokemonList(client,message){
-    let author=message.author
+    let author=message.author.id
     if(!inventory[author]) return await message.reply('No tienes pokemones cazados')
     let pokemones=Object.keys(inventory[author].pokemones).map(pokemonName=>`${pokemonName} (x${inventory[author].pokemones[pokemonName]})`).join('\n')
     return await message.reply(`Pokemones:\n${pokemones}`)
