@@ -86,6 +86,7 @@ async function tryGuess(client,message,args){
        let chatid=message.from
    }
    let cid=chats[chatid]
+   let autor=message.autor
    if(!cid) return await message.reply('No hay ninguna partida en curso')
    if(cid.winner) return await message.reply(`Ya han ganado`)
 
@@ -95,13 +96,14 @@ async function tryGuess(client,message,args){
        if(cid.ev){
            clearTimeout(cid.ev);
            chats[chatid].ev=null;
-           let store={pokemones:inventory[message.author.id]?inventory[message.author.id].pokemones:{}}
+           let store={pokemones:inventory[autor]?inventory[autor].pokemones:{}}
            store.pokemones[cid.name]=store.pokemones[cid.name]?store.pokemones[cid.name]+1:1
-           inventory[message.author.id]=store
+           inventory[autor]=store
 
        }
-       cid.winner=message.author
+       cid.winner=autor
        await save()
+       console.log(`Ganador: ${autor}(En:${chatid}`)
        await message.reply('Has adivinado el Pokemon')
 
    }else{
