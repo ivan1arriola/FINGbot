@@ -7,24 +7,10 @@ const axios = require("axios");
 // Ruta a la carpeta de stickers
 const stickersDir = path.join(__dirname, "../stickers");
 
-/* Cargar chistes desde el archivo JSON
-//const jokesPath = path.join(__dirname, '../datos/chistes.json');
-
-// Verificar si el archivo de chistes existe y no está vacío
-let jokes = [];
-if (fs.existsSync(jokesPath)) {
-  const jokesData = fs.readFileSync(jokesPath, "utf-8");
-  jokes = JSON.parse(jokesData);
-  if (!Array.isArray(jokes) || jokes.length === 0) {
-    console.error("Error: No hay chistes disponibles en el archivo.");
-  }
-} else {
-  console.error("Error: El archivo de chistes no existe.");
-} */
-
 // Función para enviar un chiste y un sticker
 const sendJokeAndSticker = async (client, message) => {
   try {
+    // Mensaje inicial
     let msg = "No puedo hacer eso, soy un bot serio. 🤖";
     await client.sendMessage(message.from, msg);
 
@@ -37,51 +23,44 @@ const sendJokeAndSticker = async (client, message) => {
     // Esperar otros 5 segundos antes de enviar el chiste
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    // Verificar si hay chistes disponibles
-    if (jokes.length > 0) {
-      axios
-        .get("https://v2.jokeapi.dev/joke/Any?lang=es")
-        .then(async (response) => {
-          if (response.data.error) {
-            console.error("Error al obtener el chiste:", response.data.error);
-            await client.sendMessage(
-              message.from,
-              "Lo siento, no pude obtener un chiste en este momento."
-            );
-            return;
-          }
-
-          // Verificar el tipo de chiste
-          if (response.data.type === "single") {
-            const randomJoke = response.data.joke;
-            const emojiJoke = `😂😂 ${randomJoke} 😂😂`;
-            await client.sendMessage(message.from, emojiJoke);
-          } else if (response.data.type === "twopart") {
-            const setup = response.data.setup;
-            const delivery = response.data.delivery;
-
-            // Enviar el primer mensaje (setup)
-            await client.sendMessage(message.from, `😂 ${setup}`);
-
-            // Esperar un momento antes de enviar el segundo mensaje (delivery)
-            setTimeout(async () => {
-              await client.sendMessage(message.from, `😂😂 ${delivery} 😂😂`);
-            }, 2000); // Puedes ajustar el tiempo de espera en milisegundos
-          }
-        })
-        .catch(async (error) => {
-          console.error("Error en la solicitud de chiste:", error);
+    // Obtener un chiste de la API
+    axios
+      .get("https://v2.jokeapi.dev/joke/Any?lang=es")
+      .then(async (response) => {
+        if (response.data.error) {
+          console.error("Error al obtener el chiste:", response.data.error);
           await client.sendMessage(
             message.from,
-            "Lo siento, ocurrió un error al intentar obtener un chiste."
+            "Lo siento, no pude obtener un chiste en este momento."
           );
-        });
-    } else {
-      await client.sendMessage(
-        message.from,
-        "Lo siento, no tengo chistes disponibles en este momento."
-      );
-    }
+          return;
+        }
+
+        // Verificar el tipo de chiste
+        if (response.data.type === "single") {
+          const randomJoke = response.data.joke;
+          const emojiJoke = `😂😂 ${randomJoke} 😂😂`;
+          await client.sendMessage(message.from, emojiJoke);
+        } else if (response.data.type === "twopart") {
+          const setup = response.data.setup;
+          const delivery = response.data.delivery;
+
+          // Enviar el primer mensaje (setup)
+          await client.sendMessage(message.from, `😂 ${setup}`);
+
+          // Esperar un momento antes de enviar el segundo mensaje (delivery)
+          setTimeout(async () => {
+            await client.sendMessage(message.from, `😂😂 ${delivery} 😂😂`);
+          }, 2000); // Puedes ajustar el tiempo de espera en milisegundos
+        }
+      })
+      .catch(async (error) => {
+        console.error("Error en la solicitud de chiste:", error);
+        await client.sendMessage(
+          message.from,
+          "Lo siento, ocurrió un error al intentar obtener un chiste."
+        );
+      });
 
     // Enviar un sticker aleatorio si hay stickers disponibles
     const stickers = fs.readdirSync(stickersDir);
