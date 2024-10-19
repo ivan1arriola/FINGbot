@@ -20,16 +20,30 @@ const client = new Client({
     },
 });
 
-client.initialize();
+// Inicializar cliente con manejo de errores
+try {
+    client.initialize();
+} catch (error) {
+    console.error('Error al inicializar el cliente: ', error.message);
+}
 
 // Cargar módulos
-const commandMap = cargarModulos('modulos');
-console.log('Comandos cargados:\n' + Object.keys(commandMap).join('\n'));
+let commandMap;
+try {
+    commandMap = cargarModulos('modulos');
+    console.log('Comandos cargados:\n' + Object.keys(commandMap).join('\n'));
+} catch (error) {
+    console.error('Error al cargar los módulos: ', error.message);
+}
 
 // Evento para mostrar el código QR
 client.on('qr', async (qr) => {
-    console.log('QR recibido: ');
-    qrcode.generate(qr, { small: true });
+    try {
+        console.log('QR recibido: ');
+        qrcode.generate(qr, { small: true });
+    } catch (error) {
+        console.error('Error al generar QR: ', error.message);
+    }
 });
 
 // Evento cuando el cliente está listo
@@ -40,16 +54,27 @@ client.on('ready', () => {
 // Evento para mensajes eliminados por todos
 client.on('message_revoke_everyone', async (message) => {
     if (message.fromMe) return;
-    await client.sendMessage(message.from, '🚨🚨🚨 Alguien eliminó un mensaje en este chat. 🚨🚨🚨');
+    try {
+        await client.sendMessage(message.from, '🚫 Este mensaje ha sido eliminado por el remitente.');
+    } catch (error) {
+        console.error('Error al enviar mensaje de revocación: ', error.message);
+    }
 });
 
 // Manejo de mensajes entrantes
-client.on('message', (message) => procesarMensaje(client, message, commandMap));
+client.on('message', (message) => {
+    try {
+        procesarMensaje(client, message, commandMap);
+    } catch (error) {
+        console.error('Error al procesar el mensaje: ', error.message);
+    }
+});
 
 // Eventos de autenticación
 client.on('authenticated', () => {
-    console.log('Client is authenticated!');
+    console.log('Cliente autenticado correctamente.');
 });
-client.on('auth_failure', msg => {
-    console.error('AUTHENTICATION FAILURE', msg);
+
+client.on('auth_failure', (msg) => {
+    console.error('FALLO DE AUTENTICACIÓN', msg);
 });

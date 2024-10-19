@@ -10,6 +10,7 @@ const procesarMensaje = async (client, mensaje, commandMap) => {
     const chat = await mensaje.getChat();
 
     if (mensaje.body.startsWith(config.PREFIJO)) {
+        console.log('Comando detectado:', mensaje.body);
         await procesarComando(client, mensaje, commandMap);
         return;
     }

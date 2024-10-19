@@ -10,13 +10,17 @@ const precargarGeneraciones = async () => {
     const Pokedex = (await import('pokedex-promise-v2')).default; // Importación dinámica
     const P = new Pokedex();
 
-    const generacionesLista = await P.getGenerationsList(idioma);
-    console.log('Precargando Pokémon de todas las generaciones...');
+    try {
+        const generacionesLista = await P.getGenerationsList(idioma);
+        console.log('Precargando Pokémon de todas las generaciones...');
 
-    for (const generacion of generacionesLista.results) {
-        const generacionData = await P.getGenerationByName(generacion.name);
-        const pokemones = generacionData.pokemon_species.map(pokemon => pokemon.name);
-        generaciones[generacionData.id] = pokemones; // Almacena los Pokémon en el objeto `generaciones`
+        for (const generacion of generacionesLista.results) {
+            const generacionData = await P.getGenerationByName(generacion.name);
+            const pokemones = generacionData.pokemon_species.map(pokemon => pokemon.name);
+            generaciones[generacionData.id] = pokemones; // Almacena los Pokémon en el objeto `generaciones`
+        }
+    } catch (error) {
+        console.error('Error al precargar generaciones:', error.message);
     }
 };
 
@@ -26,7 +30,6 @@ precargarGeneraciones();
 // Función para obtener un Pokémon aleatorio
 const obtenerPokemonAleatorio = (generacion) => {
     if (generacion) {
-        // Seleccionar un Pokémon aleatorio de la generación especificada
         const pokemonDeGeneracion = generaciones[generacion];
         if (!pokemonDeGeneracion || pokemonDeGeneracion.length === 0) {
             throw new Error(`No se encontraron Pokémon para la generación ${generacion}.`);
@@ -34,7 +37,6 @@ const obtenerPokemonAleatorio = (generacion) => {
         const randomIndex = Math.floor(Math.random() * pokemonDeGeneracion.length);
         return pokemonDeGeneracion[randomIndex];
     } else {
-        // Seleccionar un Pokémon aleatorio de todas las generaciones
         const allPokemons = Object.values(generaciones).flat();
         if (allPokemons.length === 0) {
             throw new Error('No se encontraron Pokémon en ninguna generación.');
@@ -46,20 +48,26 @@ const obtenerPokemonAleatorio = (generacion) => {
 
 // Función para obtener la imagen del Pokémon
 async function obtenerImagenPokemon(urlImage) {
-    const response = await fetch(urlImage);
-    if (!response.ok) throw new Error('Error al obtener la imagen del Pokémon');
-    return await response.buffer();
+    try {
+        const response = await fetch(urlImage);
+        if (!response.ok) throw new Error('Error al obtener la imagen del Pokémon');
+        return await response.buffer();
+    } catch (error) {
+        console.error('Error al obtener la imagen:', error.message);
+        throw error; // Propagar el error
+    }
 }
 
 // Función para convertir la imagen a WebP y enviarla como sticker
 async function enviarStickerPokemon(client, message, pokemonData) {
     const pokemonName = pokemonData.name.charAt(0).toUpperCase() + pokemonData.name.slice(1);
-    const urlImage = pokemonData.sprites.other['official-artwork'].front_default;
+    const shinyChance = Math.random(); // Genera un número aleatorio entre 0 y 1
+    const isShiny = shinyChance < 0.05; // 1 en 20 es 0.05
+    const urlImage = isShiny ? pokemonData.sprites.front_shiny : pokemonData.sprites.front_default; // 1 en 20 es 0.05
 
     try {
-        // Obtener la imagen en buffer
         const imageBuffer = await obtenerImagenPokemon(urlImage);
-
+        
         // Convertir la imagen a WebP
         const webpBuffer = await sharp(imageBuffer)
             .resize(512, 512) // Cambia el tamaño si lo deseas
@@ -72,11 +80,13 @@ async function enviarStickerPokemon(client, message, pokemonData) {
         // Enviar el sticker
         await client.sendMessage(message.from, media, { sendMediaAsSticker: true });
 
-        // Enviar un mensaje adicional confirmando el envío del sticker
-        await client.sendMessage(message.from, `¡Aquí tienes un sticker de ${pokemonName}!`);
+        // Enviar mensaje si es shiny
+        if (isShiny) {
+            await client.sendMessage(message.from, '✨ ¡Es un Pokémon shiny! ✨');
+        }
     } catch (error) {
         console.error('Error al enviar el sticker de Pokémon:', error);
-        await client.sendMessage(message.from, 'Hubo un error al enviar el sticker. Intenta nuevamente.');
+        await client.sendMessage(message.from, '❌ Hubo un error al enviar el sticker. Intenta nuevamente.');
     }
 }
 
@@ -86,7 +96,7 @@ async function sendPokemonInfo(client, message, args) {
 
     // Validar el parámetro de generación si se proporciona
     if (generacion && (isNaN(generacion) || generacion < 1 || generacion > 9)) {
-        await client.sendMessage(message.from, 'Por favor, proporciona una generación válida (1-9).');
+        await client.sendMessage(message.from, '⚠️ Por favor, proporciona una generación válida (1-9).');
         return;
     }
 
@@ -97,10 +107,15 @@ async function sendPokemonInfo(client, message, args) {
         const P = new Pokedex(); // Inicializar `P`
         const pokemonData = await P.getPokemonByName(pokemon); // Obtén los detalles del Pokémon
 
-        const pokemonInfo = `Aquí tienes a ${pokemonData.name.toUpperCase()}!
-        Tipo: ${pokemonData.types.map(type => type.type.name).join(', ')}
-        Altura: ${pokemonData.height / 10} m
-        Peso: ${pokemonData.weight / 10} kg`;
+        
+
+        const user = message.author || message.from; // Identificar al usuario que envió el mensaje
+        const userID = user.split('@')[0]; // borrar lo que está después del @
+
+        const pokemonInfo = `🎉 @${userID} ¡Un ${pokemonData.name.toUpperCase()} salvaje apareció! 🎉\n` +
+            `💫 Tipo: ${pokemonData.types.map(type => type.type.name).join(', ')}\n` +
+            `📏 Altura: ${pokemonData.height / 10} m\n` +
+            `⚖️ Peso: ${pokemonData.weight / 10} kg`; 
 
         // Enviar el mensaje de información
         await client.sendMessage(message.from, pokemonInfo);
@@ -109,7 +124,7 @@ async function sendPokemonInfo(client, message, args) {
         await enviarStickerPokemon(client, message, pokemonData);
     } catch (error) {
         console.error('Error al obtener Pokémon:', error);
-        await client.sendMessage(message.from, 'Hubo un error al obtener el Pokémon. Intenta nuevamente.');
+        await client.sendMessage(message.from, '❌ Hubo un error al obtener el Pokémon. Intenta nuevamente.');
     }
 }
 

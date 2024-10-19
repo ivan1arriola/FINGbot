@@ -19,11 +19,11 @@ function cargarModulos(modulos_dir) {
                     modulos[comando.name].min_args = (comando.args) ? comando.args.filter(arg => arg.required).length : 0;
                 }
             } catch (error) {
-                console.log(`No se pudo cargar el módulo ${file}: ${error}`);
+                console.error(`No se pudo cargar el módulo ${file}: ${error.message}`); // Cambiado a console.error para errores
             }
         }
     } catch (error) {
-        console.log('Ocurrió un error cargando los módulos: ', error);
+        console.error('Ocurrió un error cargando los módulos: ', error.message); // Cambiado a console.error para errores
     }
     return modulos;
 }
@@ -41,8 +41,7 @@ function listParameters(comando) {
     return `*Parámetros:*\n${comando.args.map(arg => formatearParametro(arg)).join('\n')}`;
 }
 
-
 module.exports = { cargarModulos, usage, listParameters };
 
 // test 
-//console.log (cargarModulos('../modulos'));
+//console.log(cargarModulos('../modulos'));

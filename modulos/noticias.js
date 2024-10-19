@@ -34,16 +34,16 @@ async function fetchNews(url) {
     }
 }
 
+// Función para obtener argumentos del cuerpo del mensaje
 function obtenerArgumentos(body) {
     return body.trim().split(" ").slice(1).filter(text => text !== '');
 }
 
-
 // Función para comprobar la información de las noticias y enviar los resultados
 async function checkNewsInfo(client, msg, args) {
     try {
-        // Supongamos que `args` se obtiene de la función que procesa el comando
-        const args = obtenerArgumentos(msg.body); // Asegúrate de que esta función esté correctamente definida
+        // Obtiene los argumentos del mensaje
+        const args = obtenerArgumentos(msg.body); 
 
         // Asegúrate de que args tenga al menos un elemento y que sea un número válido
         const cantidad = (args.length > 0 && !isNaN(args[0]) && args[0] !== '') 
@@ -61,20 +61,27 @@ async function checkNewsInfo(client, msg, args) {
         // Formatea las noticias para enviarlas como mensajes
         if (latestNews.length > 0) {
             for (const news of latestNews) {
-                const mensaje = `📰 ${news.title}\n${news.summary}\n📅 ${news.date}\n🔗 ${news.link}`;
+                const mensaje = `📰 *Título:* ${news.title}\n` +
+                                `📜 *Resumen:* ${news.summary}\n` +
+                                `📅 *Fecha:* ${news.date}\n` +
+                                `🔗 *Enlace:* [Ver noticia](${news.link})`;
                 await client.sendMessage(msg.from, mensaje); // Envía cada noticia por WhatsApp
             }
         } else {
-            await client.sendMessage(msg.from, "No hay noticias disponibles en este momento.");
+            await client.sendMessage(msg.from, "🚫 No hay noticias disponibles en este momento.");
         }
     } catch (error) {
         console.error("Error al enviar noticias:", error);
-        await client.sendMessage(msg.from, "No pudimos obtener la información de las noticias en este momento.");
+        await client.sendMessage(msg.from, "❌ No pudimos obtener la información de las noticias en este momento.");
     }
 }
 
 // Exportar el comando en el formato adecuado
 module.exports = [
-    { name: 'noticias', func: checkNewsInfo, info: 'Obtiene las últimas noticias de la Facultad de Ingeniería', 
-     args: [{name:'n',info:'Cantidad de noticias'}] }
+    {
+        name: 'noticias',
+        func: checkNewsInfo,
+        info: 'Obtiene las últimas noticias de la Facultad de Ingeniería',
+        args: [{ name: 'n', info: 'Cantidad de noticias' }]
+    }
 ];

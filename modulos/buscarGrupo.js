@@ -15,6 +15,9 @@ async function buscarGrupo() {
             header: true,
             complete: function (results) {
                 grupos = results.data;
+            },
+            error: function (error) {
+                console.error('Error al parsear el CSV:', error);
             }
         });
     } catch (error) {
@@ -24,29 +27,39 @@ async function buscarGrupo() {
 
 // Función para buscar grupos por nombre usando fuzzysort
 function buscarGrupoPorNombre(nombre) {
-    const resultados = fuzzysort.go(nombre, grupos, { key: 'Nombre' });
-    return resultados.map(result => result.obj);
+    try {
+        const resultados = fuzzysort.go(nombre, grupos, { key: 'Nombre' });
+        return resultados.map(result => result.obj);
+    } catch (error) {
+        console.error('Error al buscar el grupo por nombre:', error);
+        return [];
+    }
 }
 
 // Función principal que se exportará
 async function buscarGrupoCommand(client, message, args) {
-    await buscarGrupo(); // Asegúrate de que los grupos están cargados
+    try {
+        await buscarGrupo(); // Asegúrate de que los grupos están cargados
 
-    const nombreABuscar = args.join(' ') || ''; // Unir argumentos
-    if (!nombreABuscar) {
-        await message.reply("Proporciona un nombre.");
-        return;
-    }
+        const nombreABuscar = args.join(' ') || ''; // Unir argumentos
+        if (!nombreABuscar) {
+            await message.reply("Proporciona un nombre.");
+            return;
+        }
 
-    const gruposEncontrados = buscarGrupoPorNombre(nombreABuscar);
+        const gruposEncontrados = buscarGrupoPorNombre(nombreABuscar);
 
-    if (gruposEncontrados.length > 0) {
-        // Respuesta breve con el grupo de mayor relevancia
-        const grupo = gruposEncontrados[0];
-        const enlace = grupo.GrupodeWhatsApp.includes('whatsapp') ? grupo.GrupodeWhatsApp : grupo.GrupoAlternativo;
-        await message.reply(`${grupo.Nombre}: ${enlace}`);
-    } else {
-        await message.reply("Sin resultados.");
+        if (gruposEncontrados.length > 0) {
+            // Respuesta breve con el grupo de mayor relevancia
+            const grupo = gruposEncontrados[0];
+            const enlace = grupo.GrupodeWhatsApp.includes('whatsapp') ? grupo.GrupodeWhatsApp : grupo.GrupoAlternativo;
+            await message.reply(`${grupo.Nombre}: ${enlace}`);
+        } else {
+            await message.reply("Sin resultados.");
+        }
+    } catch (error) {
+        console.error('Error en el comando buscarGrupoCommand:', error);
+        await message.reply("Lo siento, ocurrió un error al buscar el grupo.");
     }
 }
 
@@ -56,6 +69,6 @@ module.exports = [
         name: 'buscargrupo',
         func: buscarGrupoCommand,
         info: 'Busca grupos de WhatsApp por nombre y devuelve el resultado más relevante.',
-        args: [{name: 'nombre', info: 'Nombre del grupo a buscar', required: true}],
+        args: [{ name: 'nombre', info: 'Nombre del grupo a buscar', required: true }],
     }
 ];

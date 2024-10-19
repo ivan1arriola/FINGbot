@@ -1,6 +1,3 @@
-// hasQuotedMsg  boolean
-//Indicates if the message was sent as a reply to another message.
-
 const fijarMensaje = async (client, message, args) => {
     try {
         if (!message.hasQuotedMsg) {
@@ -14,6 +11,22 @@ const fijarMensaje = async (client, message, args) => {
             return;
         }
 
+        // Verificar si es un grupo
+        const chat = await message.getChat();
+        if (!chat.isGroup) {
+            await message.reply("Este comando solo se puede usar en grupos.");
+            return;
+        }
+
+        // Verificar si el bot es administrador
+        const botParticipant = chat.participants.find(p => p.id._serialized === client.info.wid._serialized);
+
+        if (!botParticipant || !botParticipant.isAdmin) {
+            await message.reply("No puedo fijar el mensaje porque no soy administrador del grupo.");
+            return;
+        }
+
+        // Fijar el mensaje
         await quotedMessage.pin();
         await message.reply("Mensaje fijado correctamente.");
     } catch (error) {
@@ -26,7 +39,7 @@ module.exports = [
     {
         name: 'fijarmensaje',
         func: fijarMensaje,
-        info: 'Fija el mensaje al que respondiste.',
+        info: 'Fija el mensaje al que respondiste si el bot es administrador del grupo.',
         args: [],
     }
 ];
