@@ -1,5 +1,5 @@
 const axios=require('axios')
-const url='quotes-api-three.vercel.app/api/randomquote?language=es'
+const url='https://quotes-api-three.vercel.app/api/randomquote?language=es'
 async function getQuote(client,message,args){
   const response=await axios.get(url)
   let text=`${response.data.quote}
