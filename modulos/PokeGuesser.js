@@ -63,12 +63,12 @@ async function createGame(client,message,args){
     chats[chat.id].alias=alias
     chats[chat.id].name=pokemon_name
     chats[chat.id].winner=''
-    chats[chat.id].ev=setTimeout(stopGame,1000*30,client,message)
+    chats[chat.id].ev=setTimeout(stopGame,1000*300,client,message)
     let rdata=await axios.get(pokemon_image,{responseType:'blob'})
     await fsAsync.writeFile('foto.png',rdata.data)
     let media=await  MessageMedia.fromFilePath('foto.png')
     await fsAsync.unlink('foto.png')
-    await message.reply(null,null,{media: media,caption:`Adivina el pokemon con !guess <nombre>`})
+    await message.reply(media,null,{caption:}`Adivina el pokemon con !guess <nombre>`)
 }
 async function tryGuess(client,message,args){
    let chat=await message.getChat()
