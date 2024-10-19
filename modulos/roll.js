@@ -44,7 +44,7 @@ function calcularTirada(expression) {
     }
 
     // Formatear el resultado de una manera más estilizada
-    const tiradasStr = tiradasIndividuales.map(tirada => `🎲 ${tirada}`).join(' - ');
+    const tiradasStr = tiradasIndividuales.map(tirada => `- ${tirada}`).join(' - ');
 
     return `🎲 *Tirada de ${cantidadDados} dados de ${carasDados} caras* 🎲\n` +
            `${tiradasStr}\n` +

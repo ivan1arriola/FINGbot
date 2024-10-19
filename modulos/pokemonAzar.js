@@ -119,7 +119,7 @@ async function sendPokemonInfo(client, message, args) {
         const user = message.author || message.from; // Identificar al usuario que envió el mensaje
         const userID = user.split('@')[0]; // borrar lo que está después del @
 
-        const pokemonInfo = `🎉 @${userID} ¡Un ${pokemonData.name.toUpperCase()} salvaje apareció! 🎉\n` +
+        const pokemonInfo = `🎉 *@${userID}* ¡Un ${pokemonData.name.toUpperCase()} salvaje apareció! 🎉\n` +
             `💫 Tipo: ${pokemonData.types.map(type => type.type.name).join(', ')}\n` +
             `📏 Altura: ${pokemonData.height / 10} m\n` +
             `⚖️ Peso: ${pokemonData.weight / 10} kg\n` +
@@ -127,7 +127,7 @@ async function sendPokemonInfo(client, message, args) {
             `🌟 Generación: ${generacionPokemon}`;
 
         // Enviar el mensaje de información
-        await client.sendMessage(message.from, pokemonInfo);
+        await client.sendMessage(message.from, pokemonInfo, { mentions: [message.author] });
 
         // Enviar el sticker
         await enviarStickerPokemon(client, message, pokemonData);

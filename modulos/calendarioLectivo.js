@@ -19,11 +19,11 @@ const sendCalendarioLectivo = async (client, message, args) => {
             },
             parciales: [
                 { inicio: moment('2024-04-27'), fin: moment('2024-05-08'), descripcion: 'Parcial 1 (1er Semestre)' },
-                { inicio: moment('2024-05-11'), fin: moment('2024-05-11'), descripcion: 'Parcial 2 (1er Semestre)' },
-                { inicio: moment('2024-07-04'), fin: moment('2024-07-15'), descripcion: 'Parcial 3 (1er Semestre)' },
+                { inicio: moment('2024-05-11'), fin: moment('2024-05-11'), descripcion: 'Parcial 1 Día Extra (1er Semestre)' },
+                { inicio: moment('2024-07-04'), fin: moment('2024-07-15'), descripcion: 'Parcial 2 (1er Semestre)' },
                 { inicio: moment('2024-09-21'), fin: moment('2024-10-01'), descripcion: 'Parcial 1 (2do Semestre)' },
-                { inicio: moment('2024-10-05'), fin: moment('2024-10-05'), descripcion: 'Parcial 2 (2do Semestre)' },
-                { inicio: moment('2024-11-22'), fin: moment('2024-12-03'), descripcion: 'Parcial 3 (2do Semestre)' }
+                { inicio: moment('2024-10-05'), fin: moment('2024-10-05'), descripcion: 'Parcial 1 Día Extra (2do Semestre)' }, 
+                { inicio: moment('2024-11-22'), fin: moment('2024-12-03'), descripcion: 'Parcial 2 (2do Semestre)' }
             ],
             examenes: [
                 { inicio: moment('2024-01-29'), fin: moment('2024-03-02'), descripcion: 'Exámenes Febrero' },
@@ -32,35 +32,59 @@ const sendCalendarioLectivo = async (client, message, args) => {
             ]
         };
 
-        // Filtrar fechas pasadas
-        const parcialesFuturos = fechas.parciales.filter(p => p.fin.isAfter(now));
-        const examenesFuturos = fechas.examenes.filter(e => e.fin.isAfter(now));
-
         // Construir el mensaje
         let mensaje = `📅 *Calendario Lectivo 2024*\n\n`;
 
         // Agregar fechas de cursos
         mensaje += `🔹 *Cursos*\n`;
         if (fechas.cursos.primerSemestre.fin.isAfter(now)) {
-            mensaje += `- Primer Semestre: 04.03.2024 - 15.07.2024\n`;
+            if (fechas.cursos.primerSemestre.inicio.isAfter(now)) {
+                const diasFaltanInicioPrimerSemestre = fechas.cursos.primerSemestre.inicio.diff(now, 'days');
+                mensaje += `- Primer Semestre: 04.03.2024 - 15.07.2024 (Faltan ${diasFaltanInicioPrimerSemestre} días para que empiece)\n`;
+            } else {
+                const diasFaltanTerminarPrimerSemestre = fechas.cursos.primerSemestre.fin.diff(now, 'days');
+                mensaje += `- Primer Semestre: 04.03.2024 - 15.07.2024 (Faltan ${diasFaltanTerminarPrimerSemestre} días para que termine)\n`;
+            }
         }
         if (fechas.cursos.segundoSemestre.fin.isAfter(now)) {
-            mensaje += `- Segundo Semestre: 05.08.2024 - 03.12.2024\n`;
+            if (fechas.cursos.segundoSemestre.inicio.isAfter(now)) {
+                const diasFaltanInicioSegundoSemestre = fechas.cursos.segundoSemestre.inicio.diff(now, 'days');
+                mensaje += `- Segundo Semestre: 05.08.2024 - 03.12.2024 (Faltan ${diasFaltanInicioSegundoSemestre} días para que empiece)\n`;
+            } else {
+                const diasFaltanTerminarSegundoSemestre = fechas.cursos.segundoSemestre.fin.diff(now, 'days');
+                mensaje += `- Segundo Semestre: 05.08.2024 - 03.12.2024 (Faltan ${diasFaltanTerminarSegundoSemestre} días para que termine)\n`;
+            }
         }
 
         // Agregar fechas de parciales
-        if (parcialesFuturos.length > 0) {
+        if (fechas.parciales.length > 0) {
             mensaje += `\n🔹 *Parciales*\n`;
-            parcialesFuturos.forEach(parcial => {
-                mensaje += `- ${parcial.descripcion}: ${parcial.inicio.format('DD.MM.YYYY')} - ${parcial.fin.format('DD.MM.YYYY')}\n`;
+            fechas.parciales.forEach(parcial => {
+                if (parcial.fin.isAfter(now)) {
+                    if (parcial.inicio.isAfter(now)) {
+                        const diasFaltanInicioParcial = parcial.inicio.diff(now, 'days');
+                        mensaje += `- ${parcial.descripcion}: ${parcial.inicio.format('DD.MM.YYYY')} - ${parcial.fin.format('DD.MM.YYYY')} (Faltan ${diasFaltanInicioParcial} días para que empiece)\n`;
+                    } else {
+                        const diasFaltanTerminarParcial = parcial.fin.diff(now, 'days');
+                        mensaje += `- ${parcial.descripcion}: ${parcial.inicio.format('DD.MM.YYYY')} - ${parcial.fin.format('DD.MM.YYYY')} (Faltan ${diasFaltanTerminarParcial} días para que termine)\n`;
+                    }
+                }
             });
         }
 
         // Agregar fechas de exámenes
-        if (examenesFuturos.length > 0) {
+        if (fechas.examenes.length > 0) {
             mensaje += `\n🔹 *Exámenes*\n`;
-            examenesFuturos.forEach(examen => {
-                mensaje += `- ${examen.descripcion}: ${examen.inicio.format('DD.MM.YYYY')} - ${examen.fin.format('DD.MM.YYYY')}\n`;
+            fechas.examenes.forEach(examen => {
+                if (examen.fin.isAfter(now)) {
+                    if (examen.inicio.isAfter(now)) {
+                        const diasFaltanInicioExamen = examen.inicio.diff(now, 'days');
+                        mensaje += `- ${examen.descripcion}: ${examen.inicio.format('DD.MM.YYYY')} - ${examen.fin.format('DD.MM.YYYY')} (Faltan ${diasFaltanInicioExamen} días para que empiece)\n`;
+                    } else {
+                        const diasFaltanTerminarExamen = examen.fin.diff(now, 'days');
+                        mensaje += `- ${examen.descripcion}: ${examen.inicio.format('DD.MM.YYYY')} - ${examen.fin.format('DD.MM.YYYY')} (Faltan ${diasFaltanTerminarExamen} días para que termine)\n`;
+                    }
+                }
             });
         }
 
