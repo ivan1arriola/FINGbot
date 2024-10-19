@@ -68,7 +68,7 @@ async function createGame(client,message,args){
     await fsAsync.writeFile('foto.png',rdata.data)
     let media=await  MessageMedia.fromFilePath('foto.png')
     await fsAsync.unlink('foto.png')
-    await message.reply(media,null,{caption:}`Adivina el pokemon con !guess <nombre>`)
+    await message.reply(media, null, { caption: 'Adivina el pokemon con !guess <nombre>' })
 }
 async function tryGuess(client,message,args){
    let chat=await message.getChat()
