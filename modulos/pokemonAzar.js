@@ -102,10 +102,17 @@ async function sendPokemonInfo(client, message, args) {
 
     try {
         const pokemon = obtenerPokemonAleatorio(generacion); // Obtén un Pokémon aleatorio
+        console.log(`Obteniendo información de ${pokemon}...`);
 
         const Pokedex = (await import('pokedex-promise-v2')).default; // Importar nuevamente la clase Pokedex
         const P = new Pokedex(); // Inicializar `P`
         const pokemonData = await P.getPokemonByName(pokemon); // Obtén los detalles del Pokémon
+
+        // obtener numero de pokedex
+        const numeroPokedex = pokemonData.id;
+
+        // obtener generacion del pokemon
+        const generacionPokemon = "Generación " + Math.ceil(numeroPokedex / 151);
 
         
 
@@ -115,7 +122,9 @@ async function sendPokemonInfo(client, message, args) {
         const pokemonInfo = `🎉 @${userID} ¡Un ${pokemonData.name.toUpperCase()} salvaje apareció! 🎉\n` +
             `💫 Tipo: ${pokemonData.types.map(type => type.type.name).join(', ')}\n` +
             `📏 Altura: ${pokemonData.height / 10} m\n` +
-            `⚖️ Peso: ${pokemonData.weight / 10} kg`; 
+            `⚖️ Peso: ${pokemonData.weight / 10} kg\n` +
+            `🔢 Número en la Pokédex: ${numeroPokedex}\n` +
+            `🌟 Generación: ${generacionPokemon}`;
 
         // Enviar el mensaje de información
         await client.sendMessage(message.from, pokemonInfo);
