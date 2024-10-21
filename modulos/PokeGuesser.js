@@ -45,7 +45,7 @@ async function stopGame(client,message){
 async function addGame(client,message,chatid,name,alias){
     chats[chatid]=template
     chats[chatid].alias=alias
-    chats[chatid].name=pokemon_name
+    chats[chatid].name=name
     chats[chatid].winner=''
     chats[chatid].ev=setTimeout(stopGame,1000*300,client,message)
 }
