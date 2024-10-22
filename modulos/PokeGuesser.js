@@ -7,7 +7,7 @@ if(fs.existsSync('pokemons.json')){
 }else{
     var inventory={}
 }
-let chats={}
+var chats={}
 let template={
     name:'Test',
     alias:[],
@@ -50,7 +50,7 @@ async function addGame(client,message,chatid,name,alias){
     chats[chatid].ev=setTimeout(stopGame,1000*300,client,message)
 }
 async function createGame(client,message,args){
-    let chatid=getChatId(message)
+    let chatid=await getChatId(message)
     if(chatid in chats && chats[chatid].winner=='') return await message.reply('Ya hay un juego en curso') 
     let pokemon_count=(await axios.get('https://pokeapi.co/api/v2/pokemon?limit=1')).data.count
     let pokemon_picked=randInt(pokemon_count)
@@ -63,13 +63,13 @@ async function createGame(client,message,args){
     pokemon_name.split('-').forEach(a=>alias.push(a))
     pokemon_name.split(' ').forEach(a=>alias.push(a))
     alias.push(pokemon_name.replace('-',' '))
-    await addGame(client,message,pokemon_name,alias)
+    await addGame(client,message,chatid,pokemon_name,alias)
     let media=await  MessageMedia.fromUrl(pokemon_image)
     const msg=`Adivina el pokemon con !guess <nombre>`
     await message.reply(msg,null,{media:media})
 }
 async function tryGuess(client,message,args){
-   let chatid=getChatId(message)
+   let chatid=await getChatId(message)
    let cid=chats[chatid]
    let autor=message.author
    if(!cid) return await message.reply('No hay ninguna partida en curso')
