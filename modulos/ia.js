@@ -7,7 +7,7 @@ Eres un estudiante de ingenieria
 function getRandomInt(max) {
   return Math.floor(Math.random() * max);
 }
-function buildResponse(message,useModel,model,prompt){
+function buildResponse(message,useModel,model,promptMsg){
   return {
   "messages": [
     message
@@ -29,7 +29,7 @@ function buildResponse(message,useModel,model,prompt){
   "clickedAnswer3": false,
   "clickedForceWebSearch": false,
   "visitFromDelta": false,
-  "userSystemPrompt":	null,
+  "userSystemPrompt":  promptMsg,
   "mobileClient": false,
   "userSelectedModel": null
   }
