@@ -43,6 +43,7 @@ module.exports = [
         name: 'help',
         func: sendHelp,
         info: 'Muestra la lista de comandos disponibles',
-        args: [{ name: 'comando', info: 'Ver ayuda específica de un comando' }]
+        args: [{ name: 'comando', info: 'Ver ayuda específica de un comando' }],
+        system:true
     }
 ];

@@ -1,5 +1,6 @@
 const config = require('../config');
 const { usage } = require('./moduloUtils');
+const ADMINISTRADOR = config.ADMINISTRADOR
 
 // Función para verificar si un comando es válido
 const esComandoValido = (command, commandMap) => {
@@ -29,14 +30,14 @@ const procesarComando = async (client, message, commandMap) => {
         }
 
         const commandObj = commandMap[command];
-     
+        if(commandObj.admin && message.from !=ADMINISTRADOR) return await client.sendMessage(message.from,`No eres administrador`); 
         // Verificar el mínimo de argumentos antes de llamar cualquier función
         if (args.length < commandObj.min_args) {
             return await message.reply(usage(commandObj));
         }
 
         // Procesar el comando (evitar logs innecesarios en producción)
-        if (command === 'help') {
+        if (commandObj.hasOwnProperty("system")) {
             await commandObj.func(client, message, args, commandMap);
         } else {
             await commandObj.func(client, message, args);
